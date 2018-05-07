@@ -1,0 +1,12 @@
+.footer{
+    border: blue 1px solid;
+    /*border: 0;*/
+    text-align: center;
+    width: 100%;
+    height: auto;
+    margin-bottom: 4px;
+}
+.footerSpan{
+    line-height: 9px;
+    background-color: rgb(250,249,251);
+}

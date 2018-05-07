@@ -1,11 +1,9 @@
 const path = require('path');
-
 const ROOT_PATH = path.resolve(__dirname);
 const SRC_PATH = path.resolve(ROOT_PATH, 'src');
 const BUILD_PATH = path.resolve(ROOT_PATH, 'dist');
 
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-
 
 module.exports = {
     devServer: {
@@ -74,6 +72,6 @@ module.exports = {
         ]
     },
     plugins: [
-        new ExtractTextPlugin("style.css")
+        new ExtractTextPlugin("style.css"),
     ]
 };
