@@ -4,10 +4,11 @@ const SRC_PATH = path.resolve(ROOT_PATH, 'src');
 const baseConfig = require('./webpack.base.config.js');
 const webpack = require('webpack');
 const HtmlwebpackPlugin = require('html-webpack-plugin');
+const OpenBrowserPlugin = require('open-browser-webpack-plugin');
 const merge = require('webpack-merge');
 
 const devConfig = merge(baseConfig, {
-    devtool: 'eval-source-map',
+    devtool: "cheap-module-eval-source-map",
     plugins: [
         new webpack.DefinePlugin({
             'process.env': {
@@ -21,6 +22,9 @@ const devConfig = merge(baseConfig, {
             title: '图书馆书目借阅系统',
             filename: 'index.html',
             template: path.resolve(SRC_PATH, 'templates', 'index.html')
+        }),
+        new OpenBrowserPlugin({
+            url: "http://localhost:9500/#/homePageSearch"
         }),
     ]
 });

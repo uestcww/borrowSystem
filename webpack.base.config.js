@@ -45,9 +45,16 @@ module.exports = {
                 include: SRC_PATH,
                 exclude: path.resolve(ROOT_PATH, 'node_modules')
             },
+            // {
+            //     test: /\.css$/,
+            //     loader: ExtractTextPlugin.extract("css-loader")
+            // },
             {
                 test: /\.css$/,
-                loader: ExtractTextPlugin.extract("css-loader")
+                use: ['css-hot-loader'].concat(ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use: 'css-loader'
+                })),
             },
             {
                 test: /\.scss$/,
