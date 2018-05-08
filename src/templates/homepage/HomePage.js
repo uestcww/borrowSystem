@@ -10,7 +10,7 @@ class HomePage extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            currentMenu: '',
+            currentMenu: "",
         }
     }
 
@@ -24,6 +24,7 @@ class HomePage extends React.Component{
         return(
             <div>
                 <div>
+                    <h1>图书馆书目借阅系统</h1>
                 </div>
                 <div>
                     <Menu onClick={this.handleClick.bind(this)}
@@ -31,7 +32,7 @@ class HomePage extends React.Component{
                           mode="horizontal"
                     >
                         <Menu.Item key="homePage">
-                            <Link to="/homePageSearch"><Icon type="home" />首页</Link>
+                            <Link to="/homePage/Search"><Icon type="home" />首页</Link>
                         </Menu.Item>
                         <SubMenu title={<span><Icon type="shopping-cart" />采购</span>}>
                             <Menu.Item key="bookBuy"><Link to="/">图书采购</Link></Menu.Item>

@@ -62,6 +62,7 @@ module.exports = {
             },
             {
                 test: /\.(png|jpg|gif|svg)$/,
+                // include: path.resolve(SRC_PATH, 'img'),
                 use: [
                     {
                         loader: 'url-loader',

@@ -24,7 +24,7 @@ const devConfig = merge(baseConfig, {
             template: path.resolve(SRC_PATH, 'templates', 'index.html')
         }),
         new OpenBrowserPlugin({
-            url: "http://localhost:9500/#/homePageSearch"
+            url: "http://localhost:9500/#/homePage/Search"
         }),
     ]
 });

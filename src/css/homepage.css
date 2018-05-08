@@ -1,6 +1,8 @@
+/*HomePage*/
 .children{
     height: 885px;
 }
+/*Footer*/
 .footer{
     border: blue 1px solid;
     /*border: 0;*/
@@ -12,4 +14,11 @@
 .footerSpan{
     line-height: 9px;
     background-color: rgb(250,249,251);
+}
+/*HomePageSearch*/
+.searchKitParent{
+    padding: 5% 0;
+}
+.searchKit{
+    padding: 10% 0;
 }
