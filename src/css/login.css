@@ -3,3 +3,19 @@
     background-image:url(../img/background.png);
     background-size:100% 100%;
 }
+.loginModal{
+    border: red 1px solid;
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    height: 400px;
+    margin-top: -250px; /* negative half of the height */
+}
+.loginForm{
+    border: blue 1px solid;
+    height: 400px;
+    margin: 0px auto;
+    width: 40%;
+}
+
+

@@ -7,11 +7,18 @@ class Login extends React.Component{
         const clientHeight = document.body.clientHeight;
         return(
             <div className="loginContent" style={{height: clientHeight}}>
-                <Row>
-                    <Col span={9}></Col>
-                    <Col span={6}>账号：<Input/></Col>
-                    <Col span={9}></Col>
-                </Row>
+                <div className="loginModal">
+                    <div className="loginForm">
+                        <Row>
+                            <Col span={4}><span>账号：</span></Col>
+                            <Col span={20}><Input /></Col>
+                        </Row>
+                        <Row>
+                            <Col span={4}><span>密码：</span></Col>
+                            <Col span={20}><Input /></Col>
+                        </Row>
+                    </div>
+                </div>
                 {/*<img src="./src/img/background.png" width="100%" height={clientHeight}/>*/}
             </div>
         )
