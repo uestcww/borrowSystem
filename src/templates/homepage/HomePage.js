@@ -24,7 +24,7 @@ class HomePage extends React.Component{
         return(
             <div>
                 <div>
-                    <h1>图书馆书目借阅系统</h1>
+                    <img src="./src/img/借阅.png" width={"500px"}/>
                 </div>
                 <div>
                     <Menu onClick={this.handleClick.bind(this)}
