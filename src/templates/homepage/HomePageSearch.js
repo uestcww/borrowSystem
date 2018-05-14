@@ -9,13 +9,41 @@ class HomePageSearch extends React.Component{
         super(props);
         this.state = {
             selectValue: "",
+            selectOption: "book",
         }
+    }
+
+    handleSearchChange(e){
+        this.setState({
+            selectValue: e.target.value,
+        })
     }
 
     handleSelectChange(value) {
         this.setState({
-            selectValue: value,
+            selectOption: value,
         })
+    }
+
+    handleSearchClick(e){
+        const jsonObj = {
+            value: this.state.selectValue,
+            option: this.state.selectOption
+        }
+        const jsonString = JSON.stringify(jsonObj);
+        let xmlhttp;
+        xmlhttp=new XMLHttpRequest();
+        xmlhttp.onreadystatechange=function() {
+            if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                let responseObj = JSON.parse(xmlhttp.responseText);
+                /*
+                处理response
+                */
+            }
+        }.bind(this)
+        xmlhttp.open("POST","url",false);
+        xmlhttp.setRequestHeader("Content-Type","application/json");
+        xmlhttp.send(jsonString);
     }
 
     render(){
@@ -24,14 +52,21 @@ class HomePageSearch extends React.Component{
                 <div className="searchKit">
                     <Row>
                         <Col span={6}></Col>
-                        <Col span={6}><Input placeholder="请输入查询的内容" /></Col>
+                        <Col span={6}>
+                            <Input
+                                type="text"
+                                placeholder="请输入查询的内容"
+                                value={this.state.selectValue}
+                                onChange={this.handleSearchChange.bind(this)}
+                            />
+                        </Col>
                         <Col span={2}>
-                            <Select defaultValue="book" style={{ width: 120 }} onChange={this.handleSelectChange.bind(this)}>
+                            <Select value={this.state.selectOption} style={{ width: 120 }} onChange={this.handleSelectChange.bind(this)}>
                                 <Option value="book">书刊</Option>
                                 <Option value="user">读者</Option>
                             </Select>
                         </Col>
-                        <Col span={8}><Button type="ghost" icon="search">Search</Button></Col>
+                        <Col span={8}><Button type="ghost" icon="search" onClick={this.handleSearchClick.bind(this)}>Search</Button></Col>
                     </Row>
                 </div>
             </div>
