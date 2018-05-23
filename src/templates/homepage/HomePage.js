@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link } from "react-router";
-import { Menu, Icon } from 'antd';
+import { Menu, Icon, Dropdown } from 'antd';
+// import { Button, Modal, message, Input, Menu, Icon, Row, Col, Radio } from 'antd';
 import Footer from "./Footer";
+import "../../css/homepage.css";
 
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -10,8 +12,13 @@ class HomePage extends React.Component{
     constructor(props){
         super(props);
         this.state = {
+            username: "我的名字长度达到了十三个字",
             currentMenu: "homePage",
         }
+    }
+
+    componentWillMount(){
+
     }
 
     handleClick(e) {
@@ -21,10 +28,21 @@ class HomePage extends React.Component{
     }
 
     render(){
+        const userMenu = (
+            <Menu>
+                <Menu.Item key="modifyPassword"><Icon type="edit" /> 修改登录密码</Menu.Item>
+                <Menu.Item key="logout"><Icon type="logout" /> 登出</Menu.Item>
+            </Menu>
+        );
         return(
             <div>
-                <div>
-                    <img src="./src/img/借阅.png" width={"500px"}/>
+                <div style={{marginTop: 10}}>
+                    <img src="./src/img/title.png" style={{width: "35%"}}/>
+                    <div className="username">
+                        <Dropdown overlay={userMenu}>
+                            <Link to="/" className="ant-dropdown-link">{this.state.username}<Icon type="down" /></Link>
+                        </Dropdown>
+                    </div>
                 </div>
                 <div>
                     <Menu onClick={this.handleClick.bind(this)}
@@ -61,18 +79,16 @@ class HomePage extends React.Component{
                             {/*<Menu.Item key="userViolationRecord"><Link to="/">用户违规记录</Link></Menu.Item>*/}
                             {/*<Menu.Item key="userHistoryManage"><Link to="/">用户历史记录管理</Link></Menu.Item>*/}
                         {/*</SubMenu>*/}
-                        <SubMenu title={<span><Icon type="setting" />系统管理</span>}>
-                            <Menu.Item key="libraryFileState"><Link to="/homePage/Search">查看库文件状态</Link></Menu.Item>
-                            <Menu.Item key="excelBookImport"><Link to="/homePage/Search">Excel书目数据导入</Link></Menu.Item>
-                            <Menu.Item key="modifyLoginPassword"><Link to="/homePage/Search">修改登录密码</Link></Menu.Item>
-                        </SubMenu>
+                        <Menu.Item key="excel">
+                            <Link to="/homePage/upload"><Icon type="export" />Excel书目数据导入</Link>
+                        </Menu.Item>
                     </Menu>
                 </div>
-                <div key={this.props.location.pathname} className="children">
+                <div key={this.props.location.pathname}>
                     {this.props.children}
                 </div>
                 <div>
-                    {/*<Footer/>*/}
+                    <Footer/>
                 </div>
             </div>
         )

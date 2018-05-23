@@ -5,6 +5,7 @@ import HomePage from "../templates/homepage/HomePage";
 import HomePageSearch from "../templates/homepage/HomePageSearch";
 import Login from "../templates/login/Login";
 import UserManage from "../templates/user/UserManage";
+import ExcelUpload from "../templates/excelUpload/ExcelUpload";
 
 class Routes extends React.Component{
     render() {
@@ -14,6 +15,7 @@ class Routes extends React.Component{
                 <Route path="/homePage" component={HomePage}>
                     <Route path="/homePage/Search" component={HomePageSearch} />
                     <Route path="/homePage/userManage" component={UserManage} />
+                    <Route path="/homePage/upload" component={ExcelUpload} />
                 </Route>
             </Router>
         );
