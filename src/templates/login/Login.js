@@ -1,8 +1,7 @@
 import React from 'react';
-import { Form, Row, Col, Input } from "antd";
-import { Button, Radio, DatePicker,TimePicker, message } from 'antd';
+import { Form, Button, Input } from "antd";
+import { Router, Route, hashHistory} from 'react-router';
 import "../../css/login.css";
-import HomePage from "../homepage/HomePage";
 
 const FormItem = Form.Item;
 
@@ -49,6 +48,7 @@ class Login extends React.Component{
         }
     }
     handleLoginClick(e){
+<<<<<<< HEAD
         if (this.state.username!=""&this.state.password!="") {
             const jsonObj = {
                 username: this.state.username,
@@ -79,49 +79,81 @@ class Login extends React.Component{
             })
         }
 
+=======
+        hashHistory.push({
+            pathname: "/homePage/Search"
+        });
+        // let flag = false;
+        // if (this.state.username==""){
+        //     flag = true;
+        //     this.setState({usernamealert:"请输入用户名"})
+        // }
+        // if (this.state.password==""){
+        //     flag = true;
+        //     this.setState({passwordalert:"请输入密码"})
+        // }
+        // if(flag){
+        //     return;
+        // }
+        // const jsonObj = {
+        //     username: this.state.username,
+        //     password: this.state.password
+        // }
+        // let jsonString = JSON.stringify(jsonObj)
+        // let xmlhttp;
+        // xmlhttp = new XMLHttpRequest();
+        // xmlhttp.onreadystatechange = function () {
+        //     if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+        //         let responseObj = JSON.parse(xmlhttp.responseText);
+        //         /*
+        //         处理response
+        //         */
+        //     }
+        // }.bind(this)
+        // xmlhttp.open("POST", "/login", false);
+        // xmlhttp.setRequestHeader("Content-Type", "application/json");
+        // xmlhttp.send(jsonString);
+>>>>>>> 727854f78c23861e8ee38e80c22b08dc925e2376
     }
-    render(x1){
+    render(){
         const clientHeight = document.body.clientHeight;
-        const formStyle = {
-            width: 800,
-            marginLeft: "auto",
-            marginRight: "auto",
-        }
         return(
             <div className="loginContent" style={{height: clientHeight}}>
-                <Form style={formStyle}>
-                    <FormItem
-                        label="账号"
-                        labelCol={{ span: 6 }}
-                        wrapperCol={{ span: 14 }}
-                    >
-                        <Input
-                            value={this.state.username}
-                            onChange={this.handleUsernameChange.bind(this)}
-                            onBlur={this.handleUsernameOnBlur.bind(this)}
-                        />
-                        <span>{this.state.usernamealert}</span>
-                    </FormItem>
-                    <FormItem
-                        label="密码"
-                        labelCol={{ span: 6 }}
-                        wrapperCol={{ span: 14 }}
-                    >
-                        <Input
-                            type="password"
-                            value={this.state.password}
-                            onChange={this.handlePasswordChange.bind(this)}
-                            onBlur={this.handlePasswordOnBlur.bind(this)}
-                        />
-                        <span>{this.state.passwordalert}</span>
-                    </FormItem>
-                    <FormItem wrapperCol={{ span: 16, offset: 6 }} style={{ marginTop: 24 }}>
-                        <Button
-                            type="primary"
-                            onClick={this.handleLoginClick.bind(this)}
-                        >确定</Button>
-                    </FormItem>
-                </Form>
+                <div className="formContent">
+                    <Form>
+                        <FormItem
+                            label="账号"
+                            labelCol={{ span: 6 }}
+                            wrapperCol={{ span: 14 }}
+                        >
+                            <Input
+                                value={this.state.username}
+                                onChange={this.handleUsernameChange.bind(this)}
+                                onBlur={this.handleUsernameOnBlur.bind(this)}
+                            />
+                            <span className="alertContent">{this.state.usernamealert}</span>
+                        </FormItem>
+                        <FormItem
+                            label="密码"
+                            labelCol={{ span: 6 }}
+                            wrapperCol={{ span: 14 }}
+                        >
+                            <Input
+                                type="password"
+                                value={this.state.password}
+                                onChange={this.handlePasswordChange.bind(this)}
+                                onBlur={this.handlePasswordOnBlur.bind(this)}
+                            />
+                            <span className="alertContent">{this.state.passwordalert}</span>
+                        </FormItem>
+                        <FormItem wrapperCol={{ span: 16, offset: 6 }}>
+                            <Button
+                                type="primary"
+                                onClick={this.handleLoginClick.bind(this)}
+                            >确定</Button>
+                        </FormItem>
+                    </Form>
+                </div>
             </div>
         )
     }
