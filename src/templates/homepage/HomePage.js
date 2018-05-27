@@ -1,7 +1,6 @@
 import React from 'react';
-import { Link } from "react-router";
+import { hashHistory, Link } from "react-router";
 import { Menu, Icon, Dropdown } from 'antd';
-// import { Button, Modal, message, Input, Menu, Icon, Row, Col, Radio } from 'antd';
 import Footer from "./Footer";
 import "../../css/homepage.css";
 
@@ -27,11 +26,29 @@ class HomePage extends React.Component{
         });
     }
 
+    handleLogout(){
+        hashHistory.push({
+            pathname: "/"
+        });
+    }
+
+    handlePasswordModify(){
+
+    }
+
+    handleUserMenu(e){
+        switch (e.key){
+            default: break;
+            case "logout": this.handleLogout();break;
+            case "modifyPassword": this.handlePasswordModify();break;
+        }
+    }
+
     render(){
         const userMenu = (
-            <Menu>
-                <Menu.Item key="modifyPassword"><Icon type="edit" /> 修改登录密码</Menu.Item>
-                <Menu.Item key="logout"><Icon type="logout" /> 登出</Menu.Item>
+            <Menu onClick={this.handleUserMenu.bind(this)}>
+                <Menu.Item key="modifyPassword"><Icon type="edit" />&nbsp;修改登录密码</Menu.Item>
+                <Menu.Item key="logout"><Icon type="logout" />&nbsp;登出</Menu.Item>
             </Menu>
         );
         return(
