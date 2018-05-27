@@ -35,14 +35,14 @@ class HomePage extends React.Component{
                             <Link to="/homePage/Search"><Icon type="home" />首页</Link>
                         </Menu.Item>
                         <SubMenu title={<span><Icon type="shopping-cart" />采购</span>}>
-                            <Menu.Item key="bookBuy"><Link to="/">图书采购</Link></Menu.Item>
+                            <Menu.Item key="bookBuy"><Link to="/homePage/Shopping">图书采购</Link></Menu.Item>
                             <Menu.Item key="bookCheck"><Link to="/">图书验收</Link></Menu.Item>
                             <Menu.Item key="bookBuyCount"><Link to="/">图书订购统计</Link></Menu.Item>
                             <Menu.Item key="bookCheckCount"><Link to="/">图书验收统计</Link></Menu.Item>
                         </SubMenu>
                         <SubMenu title={<span><Icon type="retweet" />流通</span>}>
                             <Menu.Item key="cashier"><Link to="/">出纳</Link></Menu.Item>
-                            <Menu.Item key="bookSearch"><Link to="/">书刊查询</Link></Menu.Item>
+                            <Menu.Item key="bookSearch"><Link to="/homePage/Search">书刊查询</Link></Menu.Item>
                             <Menu.Item key="userSearch"><Link to="/">用户查询</Link></Menu.Item>
                             <Menu.Item key="userBookCount"><Link to="/">用户/书刊管理统计</Link></Menu.Item>
                             <Menu.Item key="borrowOrderCount"><Link to="/">外借/预约统计</Link></Menu.Item>

@@ -68,6 +68,7 @@ class Login extends React.Component{
             xmlhttp.open("POST", "url", false);
             xmlhttp.setRequestHeader("Content-Type", "application/json");
             xmlhttp.send(jjj);
+
         }else if (this.state.username==""){
             this.setState({
                 usernamealert:"请输入用户名"
