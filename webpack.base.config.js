@@ -12,7 +12,7 @@ module.exports = {
             aggregateTimeout: 300,
             poll: 1000
         },
-        port: '8081', //设置端口号
+        port: '9500', //设置端口号
         // proxy: {
         //     '/library/**': {
         //         target: 'http://101.37.35.1:80',

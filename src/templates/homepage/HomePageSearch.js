@@ -28,8 +28,8 @@ class HomePageSearch extends React.Component{
     handleSearchClick(e){
         const jsonObj = {
             value: this.state.selectValue,
-            option: this.state.selectOption
-        }
+            option: this.state.selectOption,
+        };
         const jsonString = JSON.stringify(jsonObj);
         let xmlhttp;
         xmlhttp=new XMLHttpRequest();
@@ -40,7 +40,7 @@ class HomePageSearch extends React.Component{
                 处理response
                 */
             }
-        }.bind(this)
+        }.bind(this);
         xmlhttp.open("POST","url",false);
         xmlhttp.setRequestHeader("Content-Type","application/json");
         xmlhttp.send(jsonString);

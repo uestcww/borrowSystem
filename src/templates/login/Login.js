@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Button, Input } from "antd";
+import { Form, Button, Input, message } from "antd";
 import { Router, Route, hashHistory} from 'react-router';
 import "../../css/login.css";
 
@@ -37,7 +37,7 @@ class Login extends React.Component{
         })
     }
     handlePasswordOnBlur(e){
-        if (this.state.password==""){
+        if (this.state.password===""){
             this.setState({
                 passwordalert:"请输入密码"
             })
@@ -52,11 +52,11 @@ class Login extends React.Component{
             pathname: "/homePage/Search"
         });
         // let flag = false;
-        // if (this.state.username==""){
+        // if (this.state.username===""){
         //     flag = true;
         //     this.setState({usernamealert:"请输入用户名"})
         // }
-        // if (this.state.password==""){
+        // if (this.state.password===""){
         //     flag = true;
         //     this.setState({passwordalert:"请输入密码"})
         // }
@@ -73,12 +73,17 @@ class Login extends React.Component{
         // xmlhttp.onreadystatechange = function () {
         //     if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
         //         let responseObj = JSON.parse(xmlhttp.responseText);
-        //         /*
-        //         处理response
-        //         */
+        //         if(responseObj.errcode === "000"){
+        //             message.success("登录成功！");
+        //             hashHistory.push({
+        //                 pathname: "/homePage/Search"
+        //             });
+        //         }else if(responseObj.errcode === "001"){
+        //             message.error("账号或密码错误！");
+        //         }
         //     }
         // }.bind(this)
-        // xmlhttp.open("POST", "/login", false);
+        // xmlhttp.open("POST", "/user/login", false);
         // xmlhttp.setRequestHeader("Content-Type", "application/json");
         // xmlhttp.send(jsonString);
     }
