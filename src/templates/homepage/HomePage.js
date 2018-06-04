@@ -1,6 +1,6 @@
 import React from 'react';
 import { hashHistory, Link } from "react-router";
-import { Menu, Icon, Dropdown } from 'antd';
+import { Menu, Icon, Dropdown, Modal, Button } from 'antd';
 import Footer from "./Footer";
 import "../../css/homepage.css";
 
@@ -13,11 +13,14 @@ class HomePage extends React.Component{
         this.state = {
             username: "我的名字长度达到了十三个字",
             currentMenu: "homePage",
+            passwordModifyModalVisible: false,
         }
     }
 
     componentWillMount(){
-
+        // this.setState({
+        //     username: sessionStorage.getItem("username")
+        // });
     }
 
     handleClick(e) {
@@ -32,6 +35,12 @@ class HomePage extends React.Component{
         });
     }
 
+    setPasswordModifyModalVisible(isVisible) {
+        this.setState({
+            passwordModifyModalVisible: isVisible,
+        });
+    }
+
     handlePasswordModify(){
 
     }
@@ -40,7 +49,7 @@ class HomePage extends React.Component{
         switch (e.key){
             default: break;
             case "logout": this.handleLogout();break;
-            case "modifyPassword": this.handlePasswordModify();break;
+            case "modifyPassword": this.setPasswordModifyModalVisible(true);break;
         }
     }
 
@@ -61,6 +70,17 @@ class HomePage extends React.Component{
                         </Dropdown>
                     </div>
                 </div>
+                <Modal
+                    title="修改密码"
+                    style={{ top: 50 }}
+                    visible={this.state.passwordModifyModalVisible}
+                    onOk={() => this.setModal1Visible(false)}
+                    onCancel={() => this.setPasswordModifyModalVisible(false)}
+                >
+                    <p>对话框的内容</p>
+                    <p>对话框的内容</p>
+                    <p>对话框的内容</p>
+                </Modal>
                 <div>
                     <Menu onClick={this.handleClick.bind(this)}
                           selectedKeys={[this.state.currentMenu]}
