@@ -3,12 +3,59 @@ import { Select } from 'antd';
 import { Input } from 'antd';
 import { Button } from 'antd';
 import { Table } from 'antd';
-import { Link } from "react-router";
+import { Router, Route, hashHistory} from 'react-router';
 import "../../css/homepage.css";
 import "../../css/homepageShopping.css"
 
 const Option = Select.Option;
 const Search = Input.Search;
+
+const columns = [{
+    title: '书编号',
+    dataIndex: 'bookIndex',
+    //width: 150,
+}, {
+    title: '标题',
+    dataIndex: 'title',
+    //width: 150,
+}, {
+    title: '作者',
+    dataIndex: 'author',
+    //width:150,
+},{
+    title: 'isbn',
+    dataIndex: 'isbn',
+    //width: 150,
+},{
+    title: '出版社',
+    dataIndex: 'publisher',
+    width: 150,
+},{
+    title: '索书号',
+    dataIndex: 'callNumber',
+    //width: 150,
+},{
+    title: '条形码',
+    dataIndex: 'barCode',
+    width: 150,
+},{
+    title: '出版日期',
+    dataIndex: 'publishDate',
+    //width: 150,
+},{
+    title: '总页码',
+    dataIndex: 'pages',
+    //width: 150,
+},{
+    title: '开本',
+    dataIndex: 'format',
+    //width: 150,
+},{
+    title: '价格',
+    dataIndex: 'price',
+    //width: 150,
+}];
+const data = [];
 
 class HomePageShopping extends React.Component{
     constructor(props){
@@ -23,28 +70,17 @@ handleShoppingChange(e){
         })
 }
 handleShoppingClick(e){
-
+hashHistory.push({
+    pathname:"/homePage/order"
+})
 }
 render(){
     const clientHeight = document.body.clientHeight;
     const formStyle = {
-        width: 800,
+        width:"100%",
         marginLeft: "auto",
         marginRight: "auto",
     }
-    const columns = [{
-        title: 'Name',
-        dataIndex: 'name',
-        width: 150,
-    }, {
-        title: 'Age',
-        dataIndex: 'age',
-        width: 150,
-    }, {
-        title: 'Address',
-        dataIndex: 'address',
-    }];
-    const data = [];
         return(
 
         <div className="shoppingContent" style={{height: clientHeight}}>
@@ -90,10 +126,10 @@ render(){
                 <br /><br />
             </div>
             <div className="newCondition">
-                <Button type="newShopping" onClick={this.handleShoppingClick.bind(this)}><Link to ="/homePage/Search">新订购</Link></Button>
+                <Button type="newShopping" onClick={this.handleShoppingClick.bind(this)}>新订购</Button>
             </div>
-            <div className="tableCondition">
-                <Table columns={columns} dataSource={data} pagination={{ pageSize: 50 }} scroll={{ y: 240 }} />
+            <div className="tableCondition" style={formStyle}>
+                <Table columns={columns} dataSource={data} pagination={{ pageSize: 50 }} />
             </div>
         </div>
         )

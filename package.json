@@ -13,6 +13,7 @@
     "antd": "^3.4.4",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
+    "react-native": "^0.55.4",
     "react-router": "^3.0.5",
     "react-scripts": "1.1.4"
   },

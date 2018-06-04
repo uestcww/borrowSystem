@@ -48,38 +48,7 @@ class Login extends React.Component{
         }
     }
     handleLoginClick(e){
-<<<<<<< HEAD
-        if (this.state.username!=""&this.state.password!="") {
-            const jsonObj = {
-                username: this.state.username,
-                password: this.state.password
-            }
-            let jjj = JSON.stringify(jsonObj)
-            let xmlhttp;
-            xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function () {
-                if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-                    let responseObj = JSON.parse(xmlhttp.responseText);
-                    /*
-                    处理response
-                    */
-                }
-            }.bind(this)
-            xmlhttp.open("POST", "url", false);
-            xmlhttp.setRequestHeader("Content-Type", "application/json");
-            xmlhttp.send(jjj);
 
-        }else if (this.state.username==""){
-            this.setState({
-                usernamealert:"请输入用户名"
-            })
-        } else if (this.state.password==""){
-            this.setState({
-                passwordalert:"请输入密码"
-            })
-        }
-
-=======
         hashHistory.push({
             pathname: "/homePage/Search"
         });
@@ -113,7 +82,6 @@ class Login extends React.Component{
         // xmlhttp.open("POST", "/login", false);
         // xmlhttp.setRequestHeader("Content-Type", "application/json");
         // xmlhttp.send(jsonString);
->>>>>>> 727854f78c23861e8ee38e80c22b08dc925e2376
     }
     render(){
         const clientHeight = document.body.clientHeight;
