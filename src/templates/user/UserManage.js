@@ -87,6 +87,11 @@ class UserManage extends React.Component{
                 }
             ],
             userAddModalVisible: false,
+            userAddUsernameAlert: <br/>,
+            userAddPasswordAlert: <br/>,
+            userAddPasswordAgainAlert: <br/>,
+            userAddRoleIdAlert: <br/>,
+            newUserAddObject: {},
         }
     }
 
@@ -129,19 +134,8 @@ class UserManage extends React.Component{
         });
     }
 
-    handleUserInfoModifyCancel(){
-        this.setState({
-            userInfoModifyModalVisible: false,
-            currentColumn: {},
-            userModifyUsernameAlert: <br/>,
-            userModifyPasswordAlert: <br/>,
-            userModifyRoleIdAlert: <br/>,
-        });
-    }
-
     handleModifyInfo(){
         let currentUser = this.state.currentColumn;
-        console.log(currentUser);
         let flag = false;
         if(currentUser.username === ""){
             flag = true;
@@ -195,6 +189,16 @@ class UserManage extends React.Component{
         xmlhttp.open("POST", "/user/modify", false);
         xmlhttp.setRequestHeader("Content-Type", "application/json");
         xmlhttp.send(jsonString);
+    }
+
+    handleUserInfoModifyCancel(){
+        this.setState({
+            userInfoModifyModalVisible: false,
+            currentColumn: {},
+            userModifyUsernameAlert: <br/>,
+            userModifyPasswordAlert: <br/>,
+            userModifyRoleIdAlert: <br/>,
+        });
     }
 
     handleModifyInfoUsernameChange(e){
@@ -276,17 +280,147 @@ class UserManage extends React.Component{
     showUserAddModal(){
         this.setState({
             userAddModalVisible: true,
-        })
+            newUserAddObject: {
+                username: "",
+                password: "",
+                passwordAgain: "",
+                roleId: "",
+            },
+        });
     }
 
     handleUserAddModalOk(){
-
+        let newUser = this.state.newUserAddObject;
+        let flag = false;
+        if(newUser.username === ""){
+            flag = true;
+        }
+        if(newUser.roleId === ""){
+            flag = true;
+        }
+        if(newUser.password !== ""||newUser.passwordAgain !== ""||newUser.password !== newUser.passwordAgain){
+            flag = true;
+        }
+        if(flag){
+            return;
+        }
+        let jsonObj = {
+            username: newUser.username,
+            password: newUser.password,
+            roleId: newUser.roleId,
+        }
+        let jsonString = JSON.stringify(jsonObj);
+        let xmlhttp;
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                let responseObj = JSON.parse(xmlhttp.responseText);
+                if(responseObj.errcode === "002"){
+                    message.warning("您还没有登录，请登录后重试");
+                    return;
+                }else if(responseObj.errcode === "003"){
+                    message.error("您没有权限执行此操作！");
+                    return;
+                }else if(responseObj.errcode === "000"){
+                    message.success("添加成功！");
+                    location.reload();
+                }
+            }
+        }.bind(this);
+        xmlhttp.open("POST","/user/insertuser",false);
+        xmlhttp.setRequestHeader("Content-Type","application/json");
+        xmlhttp.send(jsonString);
     }
 
     handleUserAddCancel(){
         this.setState({
             userAddModalVisible: false,
+            newUserAddObject: {},
         })
+    }
+
+    handleUserAddUsernameChange(e){
+        this.setState({
+            newUserAddObject: Object.assign({},this.state.newUserAddObject,{username: e.target.value}),
+        });
+    }
+
+    handleUserAddPasswordChange(e){
+        this.setState({
+            newUserAddObject: Object.assign({},this.state.newUserAddObject,{password: e.target.value}),
+        });
+    }
+
+    handleUserAddPasswordAgainChange(e){
+        this.setState({
+            newUserAddObject: Object.assign({},this.state.newUserAddObject,{passwordAgain: e.target.value}),
+        });
+    }
+
+    handleUserAddRoleIdChange(e){
+        this.setState({
+            newUserAddObject: Object.assign({},this.state.newUserAddObject,{roleId: e.target.value}),
+        });
+    }
+
+    handleUserAddUsernameBlur(e){
+        if(e.target.value === ""){
+            this.setState({
+                userAddUsernameAlert: <Row>
+                    <Col span={6}></Col>
+                    <Col span={18}><span style={{color: "red",fontSize: 10}}>用户名不能为空</span></Col>
+                </Row>
+            });
+        }else{
+            this.setState({
+                userAddUsernameAlert: <br/>
+            });
+        }
+    }
+
+    handleUserAddPasswordBlur(e){
+        if(e.target.value === ""){
+            this.setState({
+                userAddPasswordAlert: <Row>
+                    <Col span={6}></Col>
+                    <Col span={18}><span style={{color: "red",fontSize: 10}}>密码不能为空</span></Col>
+                </Row>
+            });
+        }else{
+            this.setState({
+                userAddPasswordAlert: <br/>
+            });
+        }
+    }
+
+    handleUserAddPasswordAgainBlur(e){
+        if(e.target.value === ""){
+            this.setState({
+                userAddPasswordAlert: <Row>
+                    <Col span={6}></Col>
+                    <Col span={18}><span style={{color: "red",fontSize: 10}}>确认密码不能为空</span></Col>
+                </Row>
+            });
+        }else{
+            this.setState({
+                userAddPasswordAlert: <br/>
+            });
+        }
+    }
+
+    handleUserAddRoleIdBlur(e){
+        if(e.target.value === ""){
+            this.setState({
+                userAddRoleIdAlert: <Row>
+                    <Col span={6}></Col>
+                    <Col span={18}><span style={{color: "red",fontSize: 10}}>用户组名不能为空</span></Col>
+                </Row>
+            });
+        }else{
+            this.setState({
+                userAddRoleIdAlert: <br/>
+            });
+        }
     }
 
     handleDeleteUser(){
@@ -395,6 +529,52 @@ class UserManage extends React.Component{
                        onOk={this.handleUserAddModalOk.bind(this)}
                        onCancel={this.handleUserAddCancel.bind(this)}
                 >
+                    <div>
+                        <Row>
+                            <Col span={6}>用户名</Col>
+                            <Col span={18}>
+                                <Input type="text"
+                                       value={this.state.newUserAddObject.username}
+                                       onChange={this.handleUserAddUsernameChange.bind(this)}
+                                       onBlur={this.handleUserAddUsernameBlur.bind(this)}
+                                />
+                            </Col>
+                        </Row>
+                        {this.state.userAddUsernameAlert}
+                        <Row>
+                            <Col span={6}>密码</Col>
+                            <Col span={18}>
+                                <Input type="password"
+                                       value={this.state.newUserAddObject.password}
+                                       onChange={this.handleUserAddPasswordChange.bind(this)}
+                                       onBlur={this.handleUserAddPasswordBlur.bind(this)}
+                                />
+                            </Col>
+                        </Row>
+                        {this.state.userAddPasswordAlert}
+                        <Row>
+                            <Col span={6}>确认密码</Col>
+                            <Col span={18}>
+                                <Input type="password"
+                                       value={this.state.newUserAddObject.passwordAgain}
+                                       onChange={this.handleUserAddPasswordAgainChange.bind(this)}
+                                       onBlur={this.handleUserAddPasswordAgainBlur.bind(this)}
+                                />
+                            </Col>
+                        </Row>
+                        {this.state.userAddPasswordAgainAlert}
+                        <Row>
+                            <Col span={6}>用户组</Col>
+                            <Col span={18}>
+                                <Input type="text"
+                                       value={this.state.newUserAddObject.roleId}
+                                       onChange={this.handleUserAddRoleIdChange.bind(this)}
+                                       onBlur={this.handleUserAddRoleIdBlur.bind(this)}
+                                />
+                            </Col>
+                        </Row>
+                        {this.state.userAddRoleIdAlert}
+                    </div>
                 </Modal>
                 <div style={tableStyle}>
                     <div style={{ marginBottom: 16 }}>
