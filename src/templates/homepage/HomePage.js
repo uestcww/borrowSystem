@@ -96,7 +96,18 @@ class HomePage extends React.Component{
                             <Menu.Item key="bookCheckCount"><Link to="/homePage/Search">图书验收统计</Link></Menu.Item>
                         </SubMenu>
                         <SubMenu title={<span><Icon type="retweet" />流通</span>}>
-                            <Menu.Item key="cashier"><Link to="/homePage/Search">出纳</Link></Menu.Item>
+                            <SubMenu title={<span>出纳</span>}>
+                                <Menu.Item key="borrow">外借</Menu.Item>
+                                <Menu.Item key="return">还回</Menu.Item>
+                                <Menu.Item key="renew">续借</Menu.Item>
+                                <Menu.Item key="order">预约</Menu.Item>
+                                <Menu.Item key="lost">丢失</Menu.Item>
+                                <Menu.Item key="fouling">污损</Menu.Item>
+                                <Menu.Item key="finesDeal">罚金处理</Menu.Item>
+                                <Menu.Item key="retreatFines">退罚金</Menu.Item>
+                                <Menu.Item key="dayHistory">当日历史</Menu.Item>
+                                <Menu.Item key="circulation">流通量</Menu.Item>
+                            </SubMenu>
                             <Menu.Item key="bookSearch"><Link to="/homePage/Search">书刊查询</Link></Menu.Item>
                             <Menu.Item key="userSearch"><Link to="/homePage/Search">用户查询</Link></Menu.Item>
                             <Menu.Item key="userBookCount"><Link to="/homePage/Search">用户/书刊管理统计</Link></Menu.Item>
