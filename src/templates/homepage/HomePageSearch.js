@@ -36,12 +36,25 @@ class HomePageSearch extends React.Component{
         xmlhttp.onreadystatechange=function() {
             if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
                 let responseObj = JSON.parse(xmlhttp.responseText);
-                /*
-                处理response
-                */
+                if (responseObj.errcode==="01") {
+                    message.warning("输入有误");
+                    return;
+                }else if (responseObj.errcode==="00"){
+                    let dataList = responseObj.searchList;
+                    let tableData = this.state.data;
+                    let dataObj;
+                    for (let i = 0;i<dataList.length;i++){
+                        dataObj = Object.assign({},dataList[i],{key:i})
+                        tableData.push(dataObj);
+                    }
+                    this.setState({
+                        data:tableData
+                    });
+
+                }
             }
         }.bind(this);
-        xmlhttp.open("POST","url",false);
+        xmlhttp.open("GET","/main/searchBooks",false);
         xmlhttp.setRequestHeader("Content-Type","application/json");
         xmlhttp.send(jsonString);
     }

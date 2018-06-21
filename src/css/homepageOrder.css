@@ -1,0 +1,11 @@
+.orderCommit{
+    float:left;
+}
+.orderNext{
+    float:left;
+    margin-left: 30px;
+}
+.orderCancel{
+    float:left;
+    margin-left: 30px;
+}

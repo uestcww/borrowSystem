@@ -54,6 +54,10 @@ class HomePage extends React.Component{
     }
 
     render(){
+        const MenuStyle = {
+            backgroundColor: "rgb(249,249,251)",
+            borderBottom: "1px rgb(e8e8e8) solid",
+        };
         const userMenu = (
             <Menu onClick={this.handleUserMenu.bind(this)}>
                 <Menu.Item key="modifyPassword"><Icon type="edit" />&nbsp;修改登录密码</Menu.Item>
@@ -85,15 +89,17 @@ class HomePage extends React.Component{
                     <Menu onClick={this.handleClick.bind(this)}
                           selectedKeys={[this.state.currentMenu]}
                           mode="horizontal"
+                          style={MenuStyle}
                     >
                         <Menu.Item key="homePage">
                             <Link to="/homePage/Search"><Icon type="home" />首页</Link>
                         </Menu.Item>
                         <SubMenu title={<span><Icon type="shopping-cart" />采购</span>}>
-                            <Menu.Item key="bookBuy"><Link to="/homePage/Search">图书采购</Link></Menu.Item>
-                            <Menu.Item key="bookCheck"><Link to="/homePage/Search">图书验收</Link></Menu.Item>
-                            <Menu.Item key="bookBuyCount"><Link to="/homePage/Search">图书订购统计</Link></Menu.Item>
-                            <Menu.Item key="bookCheckCount"><Link to="/homePage/Search">图书验收统计</Link></Menu.Item>
+
+                            <Menu.Item key="bookBuy"><Link to="/homePage/Shopping">图书采购</Link></Menu.Item>
+                            <Menu.Item key="bookCheck"><Link to="/homePage/check">图书验收</Link></Menu.Item>
+                            <Menu.Item key="bookBuyCount"><Link to="/homePage/orderStatistic">图书订购统计</Link></Menu.Item>
+                            <Menu.Item key="bookCheckCount"><Link to="/homePage/checkStatistic">图书验收统计</Link></Menu.Item>
                         </SubMenu>
                         <SubMenu title={<span><Icon type="retweet" />流通</span>}>
                             <SubMenu title={<span>出纳</span>}>
@@ -120,12 +126,6 @@ class HomePage extends React.Component{
                         <Menu.Item key="userManage">
                             <Link to="/homePage/userManage"><Icon type="team" />用户管理</Link>
                         </Menu.Item>
-                        {/*<SubMenu title={<span><Icon type="team" />用户管理</span>}>*/}
-                            {/*<Menu.Item key="modifyUserInfo"><Link to="/">修改用户信息</Link></Menu.Item>*/}
-                            {/*<Menu.Item key="modifyPassword"><Link to="/">修改密码</Link></Menu.Item>*/}
-                            {/*<Menu.Item key="userViolationRecord"><Link to="/">用户违规记录</Link></Menu.Item>*/}
-                            {/*<Menu.Item key="userHistoryManage"><Link to="/">用户历史记录管理</Link></Menu.Item>*/}
-                        {/*</SubMenu>*/}
                         <Menu.Item key="excel">
                             <Link to="/homePage/upload"><Icon type="export" />Excel书目数据导入</Link>
                         </Menu.Item>

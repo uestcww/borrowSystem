@@ -48,6 +48,7 @@ class Login extends React.Component{
         }
     }
     handleLoginClick(e){
+
         hashHistory.push({
             pathname: "/homePage/Search"
         });

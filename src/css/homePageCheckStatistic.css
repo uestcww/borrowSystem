@@ -1,0 +1,32 @@
+.shoppingCondition1{
+    position: absolute;
+    top: 180px;
+    font-size: small;
+}
+.searchCondition1{
+    position: absolute;
+    top: 180px;
+    left: 300px;
+}
+.newCondition1{
+    position: absolute;
+    left: 1000px;
+    top: 180px;
+}
+.tableCondition1{
+    position: absolute;
+    top: 280px;
+}
+.language1{
+    margin-left: 50px;
+}
+.searchDatabase1{
+
+    margin-left: 50px;
+}
+.searchWay1{
+ margin-left: 50px;
+}
+.shoppingContent1{
+    width:100%;
+}

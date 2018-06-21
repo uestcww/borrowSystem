@@ -1,0 +1,34 @@
+.shoppingCondition{
+    position: absolute;
+    top: 180px;
+    font-size: small;
+}
+.searchCondition{
+    position: absolute;
+    top: 180px;
+    left: 300px;
+}
+.newCondition{
+    position: absolute;
+    top: 180px;
+    left: 1200px;
+}
+.tableCondition{
+    position: absolute;
+    top: 280px;
+}
+.language{
+    position: relative;
+    left: 30px;
+}
+.searchDatabase{
+    position: relative;
+    left: 50px;
+}
+.searchWay{
+    position: relative;
+    left: 70px;
+}
+.shoppingContent{
+    width:100%;
+}
