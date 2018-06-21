@@ -54,6 +54,10 @@ class HomePage extends React.Component{
     }
 
     render(){
+        const MenuStyle = {
+            backgroundColor: "rgb(249,249,251)",
+            borderBottom: "1px rgb(e8e8e8) solid",
+        };
         const userMenu = (
             <Menu onClick={this.handleUserMenu.bind(this)}>
                 <Menu.Item key="modifyPassword"><Icon type="edit" />&nbsp;修改登录密码</Menu.Item>
@@ -85,6 +89,7 @@ class HomePage extends React.Component{
                     <Menu onClick={this.handleClick.bind(this)}
                           selectedKeys={[this.state.currentMenu]}
                           mode="horizontal"
+                          style={MenuStyle}
                     >
                         <Menu.Item key="homePage">
                             <Link to="/homePage/Search"><Icon type="home" />首页</Link>
@@ -98,9 +103,8 @@ class HomePage extends React.Component{
                         </SubMenu>
                         <SubMenu title={<span><Icon type="retweet" />流通</span>}>
                             <SubMenu title={<span>出纳</span>}>
-                                <Menu.Item key="borrow">外借</Menu.Item>
+                                <Menu.Item key="borrow"><Link to="/homePage/cashier/borrow">外借/续借</Link></Menu.Item>
                                 <Menu.Item key="return">还回</Menu.Item>
-                                <Menu.Item key="renew">续借</Menu.Item>
                                 <Menu.Item key="order">预约</Menu.Item>
                                 <Menu.Item key="lost">丢失</Menu.Item>
                                 <Menu.Item key="fouling">污损</Menu.Item>
@@ -109,9 +113,9 @@ class HomePage extends React.Component{
                                 <Menu.Item key="dayHistory">当日历史</Menu.Item>
                                 <Menu.Item key="circulation">流通量</Menu.Item>
                             </SubMenu>
-                            <Menu.Item key="bookSearch"><Link to="/homePage/Search">书刊查询</Link></Menu.Item>
+                            <Menu.Item key="bookSearch"><Link to="/homePage/BookSearch">书刊查询</Link></Menu.Item>
                             <Menu.Item key="userSearch"><Link to="/homePage/Search">用户查询</Link></Menu.Item>
-                            <Menu.Item key="userBookCount"><Link to="/homePage/Search">用户/书刊管理统计</Link></Menu.Item>
+                            <Menu.Item key="userBookCount"><Link to="/homePage/userBookManageCount">用户/书刊管理统计</Link></Menu.Item>
                             <Menu.Item key="borrowOrderCount"><Link to="/homePage/Search">外借/预约统计</Link></Menu.Item>
                             <Menu.Item key="circulationPersonCount"><Link to="/homePage/Search">流通人次统计</Link></Menu.Item>
                             <Menu.Item key="loaningCount"><Link to="/homePage/Search">借阅名次统计</Link></Menu.Item>
@@ -122,12 +126,6 @@ class HomePage extends React.Component{
                         <Menu.Item key="userManage">
                             <Link to="/homePage/userManage"><Icon type="team" />用户管理</Link>
                         </Menu.Item>
-                        {/*<SubMenu title={<span><Icon type="team" />用户管理</span>}>*/}
-                            {/*<Menu.Item key="modifyUserInfo"><Link to="/">修改用户信息</Link></Menu.Item>*/}
-                            {/*<Menu.Item key="modifyPassword"><Link to="/">修改密码</Link></Menu.Item>*/}
-                            {/*<Menu.Item key="userViolationRecord"><Link to="/">用户违规记录</Link></Menu.Item>*/}
-                            {/*<Menu.Item key="userHistoryManage"><Link to="/">用户历史记录管理</Link></Menu.Item>*/}
-                        {/*</SubMenu>*/}
                         <Menu.Item key="excel">
                             <Link to="/homePage/upload"><Icon type="export" />Excel书目数据导入</Link>
                         </Menu.Item>

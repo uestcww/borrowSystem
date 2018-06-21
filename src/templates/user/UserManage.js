@@ -1,6 +1,5 @@
 import React from 'react';
-import { Table, Button, Modal, Row, Col, Input } from 'antd';
-import {message} from "antd/lib/index";
+import { Table, Button, Modal, Row, Col, Input, message } from 'antd';
 
 const confirm = Modal.confirm;
 
@@ -73,6 +72,7 @@ class UserManage extends React.Component{
                 {
                     title: '用户名',
                     dataIndex: 'username',
+                    key: "username",
                 },
                 {
                     title: '用户组id',
@@ -449,7 +449,7 @@ class UserManage extends React.Component{
             marginTop: 20,
             marginRight: 20,
             marginLeft: 20
-        }
+        };
         const rowSelection = {
             selectedRowKeys: this.state.selectedRowKeys,
             onChange: this.onSelectChange.bind(this),

@@ -1,0 +1,15 @@
+.bodyDiv{
+    border: 1px red solid;
+}
+.queryDiv{
+    border: 1px green solid;
+    width: 30%;
+    display: inline-block;
+    vertical-align: top;
+}
+.infoDiv{
+    border: 1px blue solid;
+    width: 70%;
+    display: inline-block;
+    vertical-align: top;
+}
