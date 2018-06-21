@@ -4,6 +4,7 @@ import { Input } from 'antd';
 import { Button } from 'antd';
 import { Table } from 'antd';
 import { Router, Route, hashHistory} from 'react-router';
+import {message} from "antd/lib/index";
 import "../../css/homepage.css";
 import "../../css/homepageShopping.css"
 
@@ -61,19 +62,60 @@ class HomePageShopping extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            language:""
+            selectValue: "",
+            selectOption: "title",
         }
     }
-handleShoppingChange(e){
+handleShoppingSearchChange(e){
         this.setState({
-            language:e.key
+            selectValue:e.target.value
         })
 }
+handleShoppingSelectChange(value) {
+        this.setState({
+            selectOption: value,
+        })
+    }
+
 handleShoppingClick(e){
 hashHistory.push({
     pathname:"/homePage/order"
 })
 }
+handleEnterClick(e){
+    const jsonObj = {
+        value: this.state.selectValue,
+        option: this.state.selectOption,
+    };
+    const jsonString = JSON.stringify(jsonObj);
+    let xmlhttp;
+    xmlhttp=new XMLHttpRequest();
+    xmlhttp.onreadystatechange=function() {
+        if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+            let responseObj = JSON.parse(xmlhttp.responseText);
+            if (responseObj.code==="01") {
+                message.warning("输入有误");
+                return;
+            }else if (responseObj.code==="00"){
+                let dataList = responseObj.data;
+                let tableData = this.state.data;
+                let dataObj;
+                for (let i = 0;i<dataList.length;i++){
+                    dataObj = Object.assign({},dataList[i],{key:i})
+                    tableData.push(dataObj);
+                }
+                this.setState({
+                    data:tableData
+                });
+
+            }
+        }
+    }.bind(this);
+    xmlhttp.open("POST","/main/searchBooks",false);
+    xmlhttp.setRequestHeader("Content-Type","application/json");
+    xmlhttp.send(jsonString);
+}
+
 render(){
     const clientHeight = document.body.clientHeight;
     const formStyle = {
@@ -85,7 +127,7 @@ render(){
 
         <div className="shoppingContent" style={{height: clientHeight}}>
             <div className="shoppingCondition">
-            <label className="language">类型：
+            {/*<label className="language">类型：
             <Select key={this.state.language} style={{ width: 120 }} onChange={this.handleShoppingChange.bind(this)}>
                 <Option key="Chinese">中文</Option>
                 <Option key="English">英文</Option>
@@ -101,27 +143,26 @@ render(){
                     <Option key="recordDatabase">套录库</Option>
                     <Option key="workDatabase">工作库</Option>
                 </Select>
-            </label>
+            </label>*/}
             <label className="searchWay">检索途径：
-                <Select key={this.state.language} style={{ width: 120 }} onChange={this.handleShoppingChange.bind(this)}>
-                    <Option key="isbn">ISBN号</Option>
-                    <Option key="title">题名</Option>
-                    <Option key="responsibility">责任者</Option>
-                    <Option key="publish">出版社</Option>
-                    <Option key="number">索书号</Option>
-                    <Option key="orderNumber">订购批号</Option>
-                    <Option key="checkNumber">验收批号</Option>
-                    <Option key="controlNumber">控制号</Option>
-                    <Option key="operator">操作员</Option>
+                <Select value={this.state.selectOption} style={{ width: 120 }} onChange={this.handleShoppingSelectChange.bind(this)}>
+                    <Option value="title">标题</Option>
+                    <Option value="author">作者或责任人</Option>
+                    <Option value="callNumber">索书号</Option>
+                    <Option value="isbn">isbn</Option>
+                    <Option value="barCode">书的条形码</Option>
                 </Select>
             </label>
         </div>
             <div className="searchCondition">
                 <Search
-                    placeholder="input search text"
-                    onSearch={value => console.log(value)}
-                    style={{ width: 200 }}
+                    type="text"
+                    placeholder="请输入查询内容"
+                    onSearch={this.handleEnterClick.bind(this)}
+                    style={{ width: 800 }}
+                    value={this.state.selectValue}
                     enterButton
+                    onChange={this.handleShoppingSearchChange.bind(this)}
                 />
                 <br /><br />
             </div>

@@ -80,9 +80,9 @@ class HomePageOrder extends React.Component{
     }
     handleOrderClick(e){
 
-        hashHistory.push({
+      /*  hashHistory.push({
             pathname: "/homePage/Shopping"
-        });
+        });*/
          const jsonObj = {
              bookIndex: this.state.bookIndex,
              title: this.state.title,
@@ -136,9 +136,9 @@ class HomePageOrder extends React.Component{
         xmlhttp.onreadystatechange = function () {
             if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
                 let responseObj = JSON.parse(xmlhttp.responseText);
-                /*
-                处理response
-               */
+                /*hashHistory.push({
+                    pathname: "/homePage/order"
+                });*/
             }
         }.bind(this)
         xmlhttp.open("POST", "url", false);

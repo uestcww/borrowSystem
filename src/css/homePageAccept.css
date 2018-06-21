@@ -1,0 +1,13 @@
+.searchAccept{
+    position: absolute;
+    top: 170px;
+    left: 20px;
+    width: 400px;
+}
+.searchEditable{
+    position: relative;
+    top: 80px;
+}
+.AcceptReturn{
+    text-align: center;
+}

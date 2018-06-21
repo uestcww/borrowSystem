@@ -4,87 +4,71 @@ import { Input } from 'antd';
 import { Button } from 'antd';
 import { Table } from 'antd';
 import { Router, Route, hashHistory} from 'react-router';
-import "../../css/homepage.css";
-import "../../css/homepageShopping.css"
 import {message} from "antd/lib/index";
+import "../../css/homepage.css";
+import "../../css/homePageCheckStatistic.css"
 
 const Option = Select.Option;
-const Search = Input.Search;
 
 const columns = [{
-    title: '书编号',
+    title: '书目名称',
     dataIndex: 'bookIndex',
     //width: 150,
 }, {
-    title: '标题',
+    title: '种数',
     dataIndex: 'title',
     //width: 150,
 }, {
-    title: '作者',
+    title: '册数',
     dataIndex: 'author',
     //width:150,
 },{
-    title: 'isbn',
+    title: '金额',
     dataIndex: 'isbn',
     //width: 150,
 },{
-    title: '出版社',
+    title: '金额百分比',
     dataIndex: 'publisher',
-    width: 150,
+    //width: 150,
 },{
-    title: '索书号',
+    title: '备注',
     dataIndex: 'callNumber',
-    //width: 150,
-},{
-    title: '条形码',
-    dataIndex: 'barCode',
-    width: 150,
-},{
-    title: '出版日期',
-    dataIndex: 'publishDate',
-    //width: 150,
-},{
-    title: '总页码',
-    dataIndex: 'pages',
-    //width: 150,
-},{
-    title: '开本',
-    dataIndex: 'format',
-    //width: 150,
-},{
-    title: '价格',
-    dataIndex: 'price',
     //width: 150,
 }];
 const data = [];
-
-class HomePageCheck extends React.Component{
+class HomePageCheckStatistic extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            selectValue: "",
+            selectOption3: "Chinese",
             selectOption: "title",
+            selectOption2:"all",
         }
     }
-    handleCheckSearchChange(e){
+    handleCheckStatisticSearchChange(option){
         this.setState({
-            selectValue:e.target.value
+            selectOption2:option
         })
     }
-    handleCheckSelectChange(value) {
+    handleCheckStatisticSelectChange(option) {
         this.setState({
-            selectOption: value,
+            selectOption: option,
         })
     }
-    handleCheckClick(e){
-        hashHistory.push({
-            pathname:"/homePage/accept"
+    handleCheckStatisticSelect3Change(option) {
+        this.setState({
+            selectOption3: option,
         })
     }
-    handleEnterClick(e){
+
+    handleCheckStatisticClick(e){
+        /* hashHistory.push({
+             pathname:""
+         })*/
         const jsonObj = {
-            value: this.state.selectValue,
+            option2: this.state.selectOption2,
             option: this.state.selectOption,
+            option3:this.state.selectOption3
         };
         const jsonString = JSON.stringify(jsonObj);
         let xmlhttp;
@@ -110,10 +94,14 @@ class HomePageCheck extends React.Component{
                 }
             }
         }.bind(this);
-        xmlhttp.open("GET","/main/searchBooks",false);
+        xmlhttp.open("POST","/main/searchBooks",false);
         xmlhttp.setRequestHeader("Content-Type","application/json");
         xmlhttp.send(jsonString);
     }
+    handleEnterClick(e){
+
+    }
+
     render(){
         const clientHeight = document.body.clientHeight;
         const formStyle = {
@@ -123,27 +111,27 @@ class HomePageCheck extends React.Component{
         }
         return(
 
-            <div className="shoppingContent" style={{height: clientHeight}}>
-                <div className="shoppingCondition">
-                    {/*<label className="language">类型：
-            <Select key={this.state.language} style={{ width: 120 }} onChange={this.handleShoppingChange.bind(this)}>
-                <Option key="Chinese">中文</Option>
-                <Option key="English">英文</Option>
-            </Select>
-            </label>
-            <label className="searchDatabase">检索数据库：
-                <Select key={this.state.language} style={{ width: 120 }} onChange={this.handleShoppingChange.bind(this)}>
-                    <Option key="all">所有</Option>
-                    <Option key="orderDatabase">订购库</Option>
-                    <Option key="checkDatabase">验收库</Option>
-                    <Option key="afterShopDatabase">采后库</Option>
-                    <Option key="centerDatabase">中央库</Option>
-                    <Option key="recordDatabase">套录库</Option>
-                    <Option key="workDatabase">工作库</Option>
-                </Select>
-            </label>*/}
-                    <label className="searchWay">检索途径：
-                        <Select value={this.state.selectOption} style={{ width: 120 }} onChange={this.handleCheckSelectChange.bind(this)}>
+            <div className="shoppingContent1" style={{height: clientHeight}}>
+                <div className="shoppingCondition1">
+                    <label className="language1">选择操作员：
+                        <Select value={this.state.selectOption3} style={{ width: 150 }} onChange={this.handleCheckStatisticSelect3Change.bind(this)}>
+                            <Option value="Chinese">中文</Option>
+                            <Option value="English">英文</Option>
+                        </Select>
+                    </label>
+                    <label className="searchDatabase1">选择订购批号：
+                        <Select value={this.state.selectOption2} style={{ width: 150 }} onChange={this.handleCheckStatisticSearchChange.bind(this)}>
+                            <Option value="all">所有</Option>
+                            <Option value="orderDatabase">订购库</Option>
+                            <Option value="checkDatabase">验收库</Option>
+                            <Option value="afterShopDatabase">采后库</Option>
+                            <Option value="centerDatabase">中央库</Option>
+                            <Option value="recordDatabase">套录库</Option>
+                            <Option value="workDatabase">工作库</Option>
+                        </Select>
+                    </label>
+                    <label className="searchWay1">选择订购单位：
+                        <Select value={this.state.selectOption} style={{ width: 150 }} onChange={this.handleCheckStatisticSelectChange.bind(this)}>
                             <Option value="title">标题</Option>
                             <Option value="author">作者或责任人</Option>
                             <Option value="callNumber">索书号</Option>
@@ -152,7 +140,7 @@ class HomePageCheck extends React.Component{
                         </Select>
                     </label>
                 </div>
-                <div className="searchCondition">
+                {/* <div className="searchCondition1">
                     <Search
                         type="text"
                         placeholder="请输入查询内容"
@@ -160,18 +148,18 @@ class HomePageCheck extends React.Component{
                         style={{ width: 800 }}
                         value={this.state.selectValue}
                         enterButton
-                        onChange={this.handleCheckSearchChange.bind(this)}
+                        onChange={this.handleOrderStatisticSearchChange.bind(this)}
                     />
                     <br /><br />
+                </div>*/}
+                <div className="newCondition1">
+                    <Button type="newShopping" onClick={this.handleCheckStatisticClick.bind(this)}>验收统计</Button>
                 </div>
-                <div className="newCondition">
-                    <Button type="newShopping" onClick={this.handleCheckClick.bind(this)}>验收</Button>
-                </div>
-                <div className="tableCondition" style={formStyle}>
+                <div className="tableCondition1" style={formStyle}>
                     <Table columns={columns} dataSource={data} pagination={{ pageSize: 50 }} />
                 </div>
             </div>
         )
     }
 }
-export default HomePageCheck;
+export default HomePageCheckStatistic;

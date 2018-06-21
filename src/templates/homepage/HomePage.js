@@ -93,8 +93,8 @@ class HomePage extends React.Component{
 
                             <Menu.Item key="bookBuy"><Link to="/homePage/Shopping">图书采购</Link></Menu.Item>
                             <Menu.Item key="bookCheck"><Link to="/homePage/check">图书验收</Link></Menu.Item>
-                            <Menu.Item key="bookBuyCount"><Link to="/homePage/Search">图书订购统计</Link></Menu.Item>
-                            <Menu.Item key="bookCheckCount"><Link to="/homePage/Search">图书验收统计</Link></Menu.Item>
+                            <Menu.Item key="bookBuyCount"><Link to="/homePage/orderStatistic">图书订购统计</Link></Menu.Item>
+                            <Menu.Item key="bookCheckCount"><Link to="/homePage/checkStatistic">图书验收统计</Link></Menu.Item>
                         </SubMenu>
                         <SubMenu title={<span><Icon type="retweet" />流通</span>}>
                             <Menu.Item key="cashier"><Link to="/homePage/Search">出纳</Link></Menu.Item>

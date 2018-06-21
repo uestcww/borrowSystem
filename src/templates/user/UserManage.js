@@ -103,6 +103,7 @@ class UserManage extends React.Component{
                     message.error("您没有权限访问！");
                     return;
                 }else if(responseObj.errcode === "000"){
+                    responseObj.data[0].title
                     let dataList = responseObj.userlist;
                     let tableData = this.state.data;
                     let dataObj;

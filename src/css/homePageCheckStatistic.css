@@ -1,35 +1,33 @@
-.shoppingCondition{
+.shoppingCondition1{
     position: absolute;
     top: 180px;
     font-size: small;
 }
-.searchCondition{
+.searchCondition1{
     position: absolute;
     top: 180px;
     left: 300px;
 }
-.newCondition{
+.newCondition1{
     position: absolute;
+    left: 1000px;
     top: 180px;
-    left: 1200px;
 }
-.tableCondition{
+.tableCondition1{
     position: absolute;
     top: 280px;
 }
-.language{
-    position: relative;
-    left: 30px;
+.language1{
+    margin-left: 50px;
 }
-.searchDatabase{
-    position: relative;
-    left: 50px;
+.searchDatabase1{
+
+    margin-left: 50px;
 }
-.searchWay{
-    position: relative;
-    left: 70px;
+.searchWay1{
+ margin-left: 50px;
 }
-.shoppingContent{
+.shoppingContent1{
     width:100%;
     background-image:url(../img/background.png);
     background-size:100% 100%;

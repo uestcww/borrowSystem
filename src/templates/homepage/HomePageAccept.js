@@ -1,201 +1,262 @@
 import React from "react"
-import { Table, Input, InputNumber, Popconfirm, Form } from 'antd';
+import { Table, Button, Modal, Row, Col, Input } from 'antd';
+import { hashHistory } from "react-router";
+import "../../css/homePageAccept.css"
+import {message} from "antd/lib/index";
 
-const data = [];
-for (let i = 1; i < 100; i++) {
-    data.push({
-        key: i.toString(),
-        bookIndex: `${i}`,
-        callNumber: `${i}`,
-        account: `${i}00`,
-    });
-}
-const FormItem = Form.Item;
-const EditableContext = React.createContext();
+const Search = Input.Search;
+const confirm = Modal.confirm;
 
-const EditableRow = ({ form, index, ...props }) => (
-    <EditableContext.Provider value={form}>
-        <tr {...props} />
-    </EditableContext.Provider>
-);
 
-const EditableFormRow = Form.create()(EditableRow);
-
-class EditableCell extends React.Component {
-    getInput = () => {
-        if (this.props.inputType === 'number') {
-            return <InputNumber />;
-        }
-        return <Input />;
-    };
-    render() {
-        const {
-            editing,
-            dataIndex,
-            title,
-            inputType,
-            record,
-            index,
-            ...restProps
-        } = this.props;
-        return (
-            <EditableContext.Consumer>
-                {(form) => {
-                    const { getFieldDecorator } = form;
-                    return (
-                        <td {...restProps}>
-                            {editing ? (
-                                <FormItem style={{ margin: 0 }}>
-                                    {getFieldDecorator(dataIndex, {
-                                        rules: [{
-                                            required: true,
-                                            message: `Please Input ${title}!`,
-                                        }],
-                                        initialValue: record[dataIndex],
-                                    })(this.getInput())}
-                                </FormItem>
-                            ) : restProps.children}
-                        </td>
-                    );
-                }}
-            </EditableContext.Consumer>
-        );
-    }
-}
-
-class EditableTable extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { data, editingKey: '' };
-        this.columns = [
-            {
-                title: '书编号',
-                dataIndex: 'bookIndex',
-                width: '25%',
-                editable: false,
-            },
-            {
-                title: '索书号',
-                dataIndex: 'callNumber',
-                width: '15%',
-                editable: false,
-            },
-            {
-                title: '册数',
-                dataIndex: 'account',
-                width: '40%',
-                editable: true,
-            },
-            {
-                title: '操作',
-                dataIndex: 'operation',
-                render: (text, record) => {
-                    const editable = this.isEditing(record);
-                    return (
-                        <div>
-                            {editable ? (
-                                <span>
-                  <EditableContext.Consumer>
-                    {form => (
-                        <a
-                            href="javascript:;"
-                            onClick={() => this.save(form, record.key)}
-                            style={{ marginRight: 8 }}
-                        >
-                            保存
-                        </a>
-                    )}
-                  </EditableContext.Consumer>
-                  <Popconfirm
-                      title="取消更改?"
-                      onConfirm={() => this.cancel(record.key)}
-                  >
-                    <a>取消</a>
-                  </Popconfirm>
-                </span>
-                            ) : (
-                                <a onClick={() => this.edit(record.key)}>更新</a>
-                            )}
-                        </div>
-                    );
-                },
-            },
-        ];
-    }
-    isEditing = (record) => {
-        return record.key === this.state.editingKey;
-    };
-    edit(key) {
-        this.setState({ editingKey: key });
-    }
-    save(form, key) {
-        form.validateFields((error, row) => {
-            if (error) {
-                return;
-            }
-            const newData = [...this.state.data];
-            const index = newData.findIndex(item => key === item.key);
-            if (index > -1) {
-                const item = newData[index];
-                newData.splice(index, 1, {
-                    ...item,
-                    ...row,
-                });
-                this.setState({ data: newData, editingKey: '' });
-            } else {
-                newData.push(data);
-                this.setState({ data: newData, editingKey: '' });
-            }
-        });
-    }
-    cancel = () => {
-        this.setState({ editingKey: '' });
-    };
-    render() {
-        const components = {
-            body: {
-                row: EditableFormRow,
-                cell: EditableCell,
-            },
-        };
-
-        const columns = this.columns.map((col) => {
-            if (!col.editable) {
-                return col;
-            }
-            return {
-                ...col,
-                onCell: record => ({
-                    record,
-                    inputType: col.dataIndex === 'age' ? 'number' : 'text',
-                    dataIndex: col.dataIndex,
-                    title: col.title,
-                    editing: this.isEditing(record),
-                }),
-            };
-        });
-
-        return (
-            <Table
-                components={components}
-                bordered
-                dataSource={this.state.data}
-                columns={columns}
-                rowClassName="editable-row"
-            />
-        );
-    }
-}
 class HomePageAccept extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            title:""
+            currentColumn: {},
+            data: [
+                {
+                    key: "0",
+                    id: "001",
+                    username: "我就会瞎打",
+                    roleId: "a"
+                },
+                {
+                    key: "1",
+                    id: "002",
+                    username: "我只会瞎打",
+                    roleId: "bb"
+                },
+                {
+                    key: "2",
+                    id: "003",
+                    username: "我就会瞎玩",
+                    roleId: "ccc"
+                },
+                {
+                    key: "3",
+                    id: "004",
+                    username: "我只会瞎玩",
+                    roleId: "dddd"
+                },
+                {
+                    key: "4",
+                    id: "005",
+                    username: "天天吃鸡",
+                    roleId: "eeeee"
+                },
+                {
+                    key: "5",
+                    id: "006",
+                    username: "天天素材库",
+                    roleId: "ffffff"
+                },
+                {
+                    key: "6",
+                    id: "007",
+                    username: "逗鱼时刻",
+                    roleId: "ggggggg"
+                },
+                {
+                    key: "7",
+                    id: "008",
+                    username: "煮鸡时刻",
+                    roleId: "hhhhhhhh"
+                }
+            ],
+            columns: [
+                {
+                    title: '代理键id',
+                    dataIndex: 'id',
+                },
+                {
+                    title: '用户名',
+                    dataIndex: 'username',
+                },
+                {
+                    title: '用户组id',
+                    dataIndex: 'roleId',
+                },
+                {
+                    title: "操作",
+                    dataIndex: "operator",
+                    render: (text,record,index) => (
+                        <a onClick={() => this.showUserAcceptModal(record)}>验收</a>
+                    )
+                }
+            ],
+            userAddModalVisible: false,
+            count:"",
         }
     }
+    handleCountChange(e){
+        this.setState({
+            count:e.target.value
+        })
+    }
+    handleShoppingSearchChange(e){
+        this.setState({
+            selectValue:e.target.value
+        })
+    }
+    handleEnterClick(e){
+        const jsonObj = {
+            value: this.state.selectValue,
+            //option: this.state.selectOption,
+        };
+        const jsonString = JSON.stringify(jsonObj);
+        let xmlhttp;
+        xmlhttp=new XMLHttpRequest();
+        xmlhttp.onreadystatechange=function() {
+            if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                let responseObj = JSON.parse(xmlhttp.responseText);
+                if (responseObj.code==="01") {
+                    message.warning("输入有误");
+                    return;
+                }else if (responseObj.code==="00"){
+                    let dataList = responseObj.data;
+                    let tableData = this.state.data;
+                    let dataObj;
+                    for (let i = 0;i<dataList.length;i++){
+                        dataObj = Object.assign({},dataList[i],{key:i})
+                        tableData.push(dataObj);
+                    }
+                    this.setState({
+                        data:tableData
+                    });
+
+                }
+            }
+        }.bind(this);
+        xmlhttp.open("GET","/main/searchBooks",false);
+        xmlhttp.setRequestHeader("Content-Type","application/json");
+        xmlhttp.send(jsonString);
+    }
+    showUserAcceptModal(record){
+        //let tempObj = Object.assign({},{password:"",passwordAgain:""},record);
+        this.setState({
+            //currentColumn: tempObj,
+            AcceptModifyModalVisible: true,
+        });
+    }
+
+    handleModifyAccept(){
+        let currentUser = this.state.currentColumn;
+        console.log(currentUser);
+
+        let jsonObj = {
+            count: currentUser.count,
+            //username: currentUser.username,
+            //password: currentUser.password,
+            //roleId: currentUser.roleId,
+        }
+        let jsonString = JSON.stringify(jsonObj);
+        let xmlhttp;
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                let responseObj = JSON.parse(xmlhttp.responseText);
+
+                    this.setState({
+                        userInfoModifyModalVisible: false,
+                        currentColumn: {},
+
+                    });
+                    return;
+
+            }
+        }.bind(this);
+        xmlhttp.open("POST", "url", false);
+        xmlhttp.setRequestHeader("Content-Type", "application/json");
+        xmlhttp.send(jsonString);
+    }
+    handleAcceptModifyCancel(){
+        this.setState({
+            AcceptModifyModalVisible: false,
+            currentColumn: {},
+        });
+    }
+    handleAcceptReturnClick(){
+        hashHistory.push({
+            pathname:"/homePage/check"
+        })
+    }
+
+    onSelectChange(value) {
+        this.setState({
+            selectedRowKeys: value
+        })
+    }
+    handleModifyAcceptChange(e){
+        this.setState({
+            currentColumn: Object.assign({},this.state.currentColumn,{count: e.target.value}),
+        });
+    }
     render(){
+        const tableStyle = {
+            marginTop: 80,
+            marginRight: 20,
+            marginLeft: 20
+        }
+        const rowSelection = {
+            selectedRowKeys: this.state.selectedRowKeys,
+            onChange: this.onSelectChange.bind(this),
+        };
         return(
-            <EditableTable />
+            <div>
+                <div className="searchAccept">
+                    <Search
+                        type="number"
+                        placeholder="请输入索书号"
+                        enterButton="Search"
+                        size="large"
+                        //onSearch={value => console.log(value)}
+                        onSearch={this.handleEnterClick.bind(this)}
+                        value={this.state.selectValue}
+                        onChange={this.handleShoppingSearchChange.bind(this)}
+                    />
+                </div>
+                <div className="searchEditable">
+                        <Modal title="验收"
+                               visible={this.state.AcceptModifyModalVisible}
+                               okText="确定验收"
+                               cancelText="取消"
+                               onOk={this.handleModifyAccept.bind(this)}
+                               onCancel={this.handleAcceptModifyCancel.bind(this)}
+
+                        >
+                            <div>
+                                <Row>
+                                    <Col span={6}>册数</Col>
+                                    <Col span={18}>
+                                        <Input type="text"
+                                               value={this.state.currentColumn.count}
+                                               onChange={this.handleModifyAcceptChange.bind(this)}
+
+                                        />
+                                    </Col>
+                                </Row>
+                                <br/>
+                            </div>
+                        </Modal>
+                </div>
+                <div style={tableStyle}>
+
+                    <Table
+                           columns={this.state.columns}
+                           dataSource={this.state.data}
+                    />
+                </div>
+                <div className="AcceptReturn">
+                    <Button
+                              type="primary"
+                              onClick={this.handleAcceptReturnClick.bind(this)}
+
+                    >返回</Button>
+                </div>
+            </div>
+
+
+
         )
     }
 }

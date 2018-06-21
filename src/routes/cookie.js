@@ -11,6 +11,9 @@ import UserManage from "../templates/user/UserManage";
 import ExcelUpload from "../templates/excelUpload/ExcelUpload";
 import HomePageCheck from "../templates/homepage/HomePageCheck"
 import HomePageAccept from "../templates/homepage/HomePageAccept"
+import HomePageOrderStatistic from "../templates/homepage/HomePageOrderStatistic";
+import HomePageCheckStatistic from "../templates/homepage/HomePageCheckStatistic";
+
 
 class Routes extends React.Component{
     render() {
@@ -25,6 +28,8 @@ class Routes extends React.Component{
                     <Route path="/homePage/order" component={HomePageOrder}/>
                     <Route path="/homePage/check"component={HomePageCheck}/>
                     <Route path="/homePage/accept" component={HomePageAccept}/>
+                    <Route path="/homePage/orderStatistic" component={HomePageOrderStatistic}/>
+                    <Route path="/homePage/checkStatistic" component={HomePageCheckStatistic}/>
 
                 </Route>
             </Router>
