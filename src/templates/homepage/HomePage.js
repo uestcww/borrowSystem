@@ -97,9 +97,8 @@ class HomePage extends React.Component{
                         </SubMenu>
                         <SubMenu title={<span><Icon type="retweet" />流通</span>}>
                             <SubMenu title={<span>出纳</span>}>
-                                <Menu.Item key="borrow">外借</Menu.Item>
+                                <Menu.Item key="borrow"><Link to="/homePage/cashier/borrow">外借/续借</Link></Menu.Item>
                                 <Menu.Item key="return">还回</Menu.Item>
-                                <Menu.Item key="renew">续借</Menu.Item>
                                 <Menu.Item key="order">预约</Menu.Item>
                                 <Menu.Item key="lost">丢失</Menu.Item>
                                 <Menu.Item key="fouling">污损</Menu.Item>
@@ -108,9 +107,9 @@ class HomePage extends React.Component{
                                 <Menu.Item key="dayHistory">当日历史</Menu.Item>
                                 <Menu.Item key="circulation">流通量</Menu.Item>
                             </SubMenu>
-                            <Menu.Item key="bookSearch"><Link to="/homePage/Search">书刊查询</Link></Menu.Item>
+                            <Menu.Item key="bookSearch"><Link to="/homePage/BookSearch">书刊查询</Link></Menu.Item>
                             <Menu.Item key="userSearch"><Link to="/homePage/Search">用户查询</Link></Menu.Item>
-                            <Menu.Item key="userBookCount"><Link to="/homePage/Search">用户/书刊管理统计</Link></Menu.Item>
+                            <Menu.Item key="userBookCount"><Link to="/homePage/userBookManageCount">用户/书刊管理统计</Link></Menu.Item>
                             <Menu.Item key="borrowOrderCount"><Link to="/homePage/Search">外借/预约统计</Link></Menu.Item>
                             <Menu.Item key="circulationPersonCount"><Link to="/homePage/Search">流通人次统计</Link></Menu.Item>
                             <Menu.Item key="loaningCount"><Link to="/homePage/Search">借阅名次统计</Link></Menu.Item>

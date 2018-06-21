@@ -1,9 +1,11 @@
-import React from 'react';
-import { Table, Button, Input } from 'antd';
+import React from "react";
+import { Table, Button, Row, Col, Input, Radio } from 'antd';
 
-const Search = Input.Search;
+import "../../../css/circulation/statistics/userBookManage.css";
 
-class BookSearch extends React.Component{
+const RadioGroup = Radio.Group;
+
+class UserBookManageOrder extends React.Component{
     constructor(props){
         super(props);
         this.state = {
@@ -81,26 +83,23 @@ class BookSearch extends React.Component{
                     )
                 }
             ],
+            optionRadio: 1,
         };
     }
 
-    onSelectChange(value) {
+    handleOptionValue(e){
+        this.setState({
+            optionRadio: e.target.value
+        });
+    }
+
+    onSelectChange(value){
         this.setState({
             selectedRowKeys: value
-        })
+        });
     }
 
     render(){
-        const tableStyle = {
-            marginTop: 20,
-            marginRight: 20,
-            marginLeft: 20
-        };
-        const searchStyle = {
-            width: "25%",
-            marginTop: 20,
-            marginLeft: 20,
-        };
         const rowSelection = {
             selectedRowKeys: this.state.selectedRowKeys,
             onChange: this.onSelectChange.bind(this),
@@ -108,28 +107,35 @@ class BookSearch extends React.Component{
         const hasSelected = this.state.selectedRowKeys.length > 0;
         return(
             <div>
-                <Search
-                    placeholder="input search text"
-                    onSearch={value => console.log(value)}
-                    enterButton
-                    style={searchStyle}
-                />
-                <div style={tableStyle}>
-                    <div style={{ marginBottom: 16 }}>
-                        <Button type="primary"
-                        >添加</Button>
-                        &nbsp;&nbsp;
-                        <Button type="primary"
-                                disabled={!hasSelected}
-                        >删除</Button>
-                    </div>
+                <div className="queryDiv">
+                    <br/>
+                    <Row>
+                        <Col span={4}></Col>
+                        <Col span={4}>请选择类型：</Col>
+                        <Col span={16}>
+                            <RadioGroup value={this.state.optionRadio} onChange={this.handleOptionValue.bind(this)}>
+                                <Radio value={1}>外借</Radio>
+                                <Radio value={2}>续借</Radio>
+                            </RadioGroup>
+                        </Col>
+                    </Row>
+                    <br/>
+                    <Row>
+                        <Col span={6}>请输入读者条码：</Col><Col span={8}><Input type="text" /></Col><Col span={2}></Col><Col span={8}><Button type="primary">确定</Button></Col>
+                    </Row>
+                    <br/>
+                    <Row>
+                        <Col span={6}>请输入书籍条码：</Col><Col span={8}><Input type="text" /></Col><Col span={2}></Col><Col span={8}><Button type="primary">确定</Button></Col>
+                    </Row>
+                </div>
+                <div className="tableDiv">
                     <Table rowSelection={rowSelection}
                            columns={this.state.columns}
                            dataSource={this.state.data}
                     />
                 </div>
             </div>
-        )
+        );
     }
 }
-export default BookSearch;
+export default UserBookManageOrder;

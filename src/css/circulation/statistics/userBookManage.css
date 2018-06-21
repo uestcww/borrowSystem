@@ -1,0 +1,11 @@
+.queryDiv{
+    width: 30%;
+    display: inline-block;
+    vertical-align: top;
+}
+.tableDiv{
+    width: 70%;
+    display: inline-block;
+    vertical-align: top;
+}
+
