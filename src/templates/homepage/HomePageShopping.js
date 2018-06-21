@@ -32,28 +32,28 @@ const columns = [{
     dataIndex: 'publisher',
     width: 150,
 },{
-    title: '索书号',
-    dataIndex: 'callNumber',
+    title: '订单批号',
+    dataIndex: 'batchNumber',
     //width: 150,
 },{
-    title: '条形码',
-    dataIndex: 'barCode',
-    width: 150,
-},{
-    title: '出版日期',
-    dataIndex: 'publishDate',
+    title: '订书总价格',
+    dataIndex: 'totalPrice',
     //width: 150,
 },{
-    title: '总页码',
-    dataIndex: 'pages',
+    title: '订购人',
+    dataIndex: 'orderPerson',
     //width: 150,
 },{
-    title: '开本',
-    dataIndex: 'format',
+    title: '订购数量',
+    dataIndex: 'orderCount',
     //width: 150,
 },{
-    title: '价格',
+    title: '书的价格',
     dataIndex: 'price',
+    //width: 150,
+},{
+    title: '订购书来源',
+    dataIndex: 'bookSource',
     //width: 150,
 }];
 const data = [];
@@ -63,7 +63,7 @@ class HomePageShopping extends React.Component{
         super(props);
         this.state={
             selectValue: "",
-            selectOption: "title",
+            selectOption: "1",
         }
     }
 handleShoppingSearchChange(e){
@@ -84,8 +84,8 @@ hashHistory.push({
 }
 handleEnterClick(e){
     const jsonObj = {
-        value: this.state.selectValue,
-        option: this.state.selectOption,
+        searchType: this.state.selectValue,
+        searchStr: this.state.selectOption,
     };
     const jsonString = JSON.stringify(jsonObj);
     let xmlhttp;
@@ -146,11 +146,13 @@ render(){
             </label>*/}
             <label className="searchWay">检索途径：
                 <Select value={this.state.selectOption} style={{ width: 120 }} onChange={this.handleShoppingSelectChange.bind(this)}>
-                    <Option value="title">标题</Option>
-                    <Option value="author">作者或责任人</Option>
-                    <Option value="callNumber">索书号</Option>
-                    <Option value="isbn">isbn</Option>
-                    <Option value="barCode">书的条形码</Option>
+                    <Option value="1">订单批号</Option>
+                    <Option value="2">作者或责任人</Option>
+                    <Option value="3">书编号</Option>
+                    <Option value="4">isbn号</Option>
+                    <Option value="5">订书来源</Option>
+                    <Option value="6">标题</Option>
+                    <Option value="7">订购人</Option>
                 </Select>
             </label>
         </div>
