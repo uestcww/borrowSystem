@@ -125,25 +125,9 @@ render(){
     }
         return(
 
-        <div className="shoppingContent" style={{height: clientHeight}}>
+        <div className="shoppingContent" >
+            <div className="shoppingLine">
             <div className="shoppingCondition">
-            {/*<label className="language">类型：
-            <Select key={this.state.language} style={{ width: 120 }} onChange={this.handleShoppingChange.bind(this)}>
-                <Option key="Chinese">中文</Option>
-                <Option key="English">英文</Option>
-            </Select>
-            </label>
-            <label className="searchDatabase">检索数据库：
-                <Select key={this.state.language} style={{ width: 120 }} onChange={this.handleShoppingChange.bind(this)}>
-                    <Option key="all">所有</Option>
-                    <Option key="orderDatabase">订购库</Option>
-                    <Option key="checkDatabase">验收库</Option>
-                    <Option key="afterShopDatabase">采后库</Option>
-                    <Option key="centerDatabase">中央库</Option>
-                    <Option key="recordDatabase">套录库</Option>
-                    <Option key="workDatabase">工作库</Option>
-                </Select>
-            </label>*/}
             <label className="searchWay">检索途径：
                 <Select value={this.state.selectOption} style={{ width: 120 }} onChange={this.handleShoppingSelectChange.bind(this)}>
                     <Option value="1">订单批号</Option>
@@ -166,10 +150,11 @@ render(){
                     enterButton
                     onChange={this.handleShoppingSearchChange.bind(this)}
                 />
-                <br /><br />
+                {/*<br /><br />*/}
             </div>
             <div className="newCondition">
                 <Button type="newShopping" onClick={this.handleShoppingClick.bind(this)}>新订购</Button>
+            </div>
             </div>
             <div className="tableCondition" style={formStyle}>
                 <Table columns={columns} dataSource={data} pagination={{ pageSize: 50 }} />

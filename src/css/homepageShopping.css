@@ -1,34 +1,28 @@
 .shoppingCondition{
-    position: absolute;
-    top: 180px;
-    font-size: small;
+    margin-left: 60px;
+    display: inline-block;
 }
 .searchCondition{
-    position: absolute;
-    top: 180px;
-    left: 300px;
+    margin-left: 60px;
+    display: inline-block;
+    vertical-align: center;
+
 }
 .newCondition{
-    position: absolute;
-    top: 180px;
-    left: 1200px;
+    margin-left: 60px;
+    display: inline-block;
 }
 .tableCondition{
-    position: absolute;
-    top: 280px;
+    margin-top: 60px;
 }
-.language{
-    position: relative;
-    left: 30px;
-}
-.searchDatabase{
-    position: relative;
-    left: 50px;
-}
+
 .searchWay{
-    position: relative;
+
     left: 70px;
 }
 .shoppingContent{
     width:100%;
+}
+.shoppingLine{
+    margin-top: 60px;
 }
