@@ -14,12 +14,14 @@ class HomePageOrder extends React.Component{
             author:"",
             isbn:"",
             publisher:"" ,
+            price:"",
             callNumber:"",
-            barCode:"",
-            publishDate:"",
-            pages:"",
+            bindStyle:"",
             format:"",
-            price:""
+            orderCount:"",
+            bookSource:"",
+            pages:"",
+            publishDate:""
 
         }
     }
@@ -50,22 +52,12 @@ class HomePageOrder extends React.Component{
     }
     handleCallNumberChange(e){
         this.setState({
-            number:e.target.value
+            callNumber:e.target.value
         })
     }
-    handleBarCodeChange(e){
+    handleBindStyleChange(e){
         this.setState({
-            barCode:e.target.value
-        })
-    }
-    handlePublishDateChange(e){
-        this.setState({
-            publishDate:e.target.value
-        })
-    }
-    handlePagesChange(e){
-        this.setState({
-            pages:e.target.value
+            bindStyle:e.target.value
         })
     }
     handleFormatChange(e){
@@ -73,9 +65,28 @@ class HomePageOrder extends React.Component{
             format:e.target.value
         })
     }
+    handleOrderCountChange(e){
+        this.setState({
+            orderCount:e.target.value
+        })
+    }
+    handleBookSourceChange(e){
+        this.setState({
+            bookSource:e.target.value
+        })
+    }
+    handlePagesChange(e){
+        this.setState({
+            pages:e.target.value
+        })
+    }
     handlePriceChange(e){
         this.setState({
             price:e.target.value
+        })
+    } handlePublishDateChange(e){
+        this.setState({
+            publishDate:e.target.value
         })
     }
     handleOrderClick(e){
@@ -89,13 +100,14 @@ class HomePageOrder extends React.Component{
              author:this.state.author,
              isbn:this.state.isbn,
              publisher:this.state.publisher,
+             price:this.state.price,
              callNumber:this.state.callNumber,
-             barCode:this.state.barCode,
-             publishDate:this.state.publishDate,
-             pages:this.state.pages,
+             bindStyle:this.state.bindStyle,
              format:this.state.format,
-             price:this.state.price
-
+             orderCount:this.state.orderCount,
+             bookSource:this.state.bookSource,
+             pages:this.state.pages,
+             publishDate:this.state.publishDate
          }
          let jsonString = JSON.stringify(jsonObj)
          let xmlhttp;
@@ -108,7 +120,7 @@ class HomePageOrder extends React.Component{
                 */
              }
          }.bind(this)
-         xmlhttp.open("POST", "url", false);
+         xmlhttp.open("POST", "http://localhost:8080/order/addOrder", false);
          xmlhttp.setRequestHeader("Content-Type", "application/json");
          xmlhttp.send(jsonString);
     }
@@ -122,12 +134,14 @@ class HomePageOrder extends React.Component{
             author:this.state.author,
             isbn:this.state.isbn,
             publisher:this.state.publisher,
+            price:this.state.price,
             callNumber:this.state.callNumber,
-            barCode:this.state.barCode,
-            publishDate:this.state.publishDate,
-            pages:this.state.pages,
+            bindStyle:this.state.bindStyle,
             format:this.state.format,
-            price:this.state.price
+            orderCount:this.state.orderCount,
+            bookSource:this.state.bookSource,
+            pages:this.state.pages,
+            publishDate:this.state.publishDate
 
         }
         let jsonString = JSON.stringify(jsonObj)
@@ -156,7 +170,7 @@ render(){
                 <div>
                     <Form>
                         <FormItem
-                            label="书编号"
+                            label="图书编号"
                             labelCol={{ span: 7 }}
                             wrapperCol={{ span: 10 }}
                         >
@@ -166,7 +180,7 @@ render(){
                             />
                         </FormItem>
                         <FormItem
-                            label="标题"
+                            label="图书标题"
                             labelCol={{ span: 7 }}
                             wrapperCol={{ span: 10 }}
                         >
@@ -176,7 +190,7 @@ render(){
                             />
                         </FormItem>
                         <FormItem
-                            label="作者"
+                            label="责任人或作者"
                             labelCol={{ span: 7 }}
                             wrapperCol={{ span: 10 }}
                         >
@@ -206,9 +220,19 @@ render(){
                             />
                         </FormItem>
                         <FormItem
-                            label="索书号"
+                            label="单价"
                             labelCol={{ span: 7 }}
                             wrapperCol={{ span: 10}}
+                        >
+                            <Input
+                                value={this.state.price}
+                                onChange={this.handlePriceChange.bind(this)}
+                            />
+                        </FormItem>
+                        <FormItem
+                            label="索书号"
+                            labelCol={{ span: 7 }}
+                            wrapperCol={{ span: 10 }}
                         >
                             <Input
                                 value={this.state.callNumber}
@@ -216,28 +240,48 @@ render(){
                             />
                         </FormItem>
                         <FormItem
-                            label="条形码"
+                            label="装订风格"
                             labelCol={{ span: 7 }}
                             wrapperCol={{ span: 10 }}
                         >
                             <Input
-                                value={this.state.barCode}
-                                onChange={this.handleBarCodeChange.bind(this)}
+                                value={this.state.bindStyle}
+                                onChange={this.handleBindStyleChange.bind(this)}
                             />
                         </FormItem>
                         <FormItem
-                            label="出版日期"
+                            label="开本"
                             labelCol={{ span: 7 }}
                             wrapperCol={{ span: 10 }}
                         >
                             <Input
-                                value={this.state.publishDate}
-                                onChange={this.handlePublishDateChange.bind(this)}
+                                value={this.state.format}
+                                onChange={this.handleFormatChange.bind(this)}
                             />
                         </FormItem>
                         <FormItem
-                            label="总页码"
+                            label="订购数量"
                             labelCol={{ span: 7 }}
+                            wrapperCol={{ span: 10}}
+                        >
+                            <Input
+                                value={this.state.orderCount}
+                                onChange={this.handleOrderCountChange.bind(this)}
+                            />
+                        </FormItem>
+                        <FormItem
+                            label="图书来源"
+                            labelCol={{ span: 7}}
+                            wrapperCol={{ span: 10 }}
+                        >
+                            <Input
+                                value={this.state.bookSource}
+                                onChange={this.handleBookSourceChange.bind(this)}
+                            />
+                        </FormItem>
+                        <FormItem
+                            label="页码"
+                            labelCol={{ span: 7}}
                             wrapperCol={{ span: 10 }}
                         >
                             <Input
@@ -246,23 +290,13 @@ render(){
                             />
                         </FormItem>
                         <FormItem
-                            label="format"
-                            labelCol={{ span: 7 }}
-                            wrapperCol={{ span: 10}}
-                        >
-                            <Input
-                                value={this.state.format}
-                                onChange={this.handleFormatChange.bind(this)}
-                            />
-                        </FormItem>
-                        <FormItem
-                            label="价格"
+                            label="出版日期"
                             labelCol={{ span: 7}}
                             wrapperCol={{ span: 10 }}
                         >
                             <Input
-                                value={this.state.price}
-                                onChange={this.handlePriceChange.bind(this)}
+                                value={this.state.publishDate}
+                                onChange={this.handlePublishDateChange.bind(this)}
                             />
                         </FormItem>
                         <FormItem wrapperCol={{ span: 16, offset: 10}}>

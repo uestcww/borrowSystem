@@ -125,7 +125,7 @@ class HomePage extends React.Component{
                         </Menu.Item>
                     </Menu>
                 </div>
-                <div key={this.props.location.pathname}>
+                <div key={this.props.location.pathname} >
                     {this.props.children}
                 </div>
                 <div>
