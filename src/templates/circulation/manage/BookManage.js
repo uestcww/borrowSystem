@@ -1,11 +1,11 @@
-import React from "react";
-import { Table, Button, Row, Col, Input, Radio } from 'antd';
+import React from 'react';
+import { Table, Button, Input } from 'antd';
 
-import "../../../css/circulation/statistics/userBookManage.css";
+import "../../../css/circulation/manage/bookManage.css";
 
-const RadioGroup = Radio.Group;
+const Search = Input.Search;
 
-class UserBookManageOrder extends React.Component{
+class BookManage extends React.Component{
     constructor(props){
         super(props);
         this.state = {
@@ -83,20 +83,13 @@ class UserBookManageOrder extends React.Component{
                     )
                 }
             ],
-            optionRadio: 1,
         };
     }
 
-    handleOptionValue(e){
-        this.setState({
-            optionRadio: e.target.value
-        });
-    }
-
-    onSelectChange(value){
+    onSelectChange(value) {
         this.setState({
             selectedRowKeys: value
-        });
+        })
     }
 
     render(){
@@ -107,35 +100,30 @@ class UserBookManageOrder extends React.Component{
         const hasSelected = this.state.selectedRowKeys.length > 0;
         return(
             <div>
-                <div className="queryDiv">
-                    <br/>
-                    <Row>
-                        <Col span={4}></Col>
-                        <Col span={4}>请选择类型：</Col>
-                        <Col span={16}>
-                            <RadioGroup value={this.state.optionRadio} onChange={this.handleOptionValue.bind(this)}>
-                                <Radio value={1}>外借</Radio>
-                                <Radio value={2}>续借</Radio>
-                            </RadioGroup>
-                        </Col>
-                    </Row>
-                    <br/>
-                    <Row>
-                        <Col span={6}>请输入读者条码：</Col><Col span={8}><Input type="text" /></Col><Col span={2}></Col><Col span={8}><Button type="primary">确定</Button></Col>
-                    </Row>
-                    <br/>
-                    <Row>
-                        <Col span={6}>请输入书籍条码：</Col><Col span={8}><Input type="text" /></Col><Col span={2}></Col><Col span={8}><Button type="primary">确定</Button></Col>
-                    </Row>
+                <div>
+                    <Search
+                        placeholder="请输入要搜索的书籍"
+                        onSearch={value => console.log(value)}
+                        enterButton
+                        className="bookSearchInput"
+                    />
                 </div>
-                <div className="tableDiv">
+                <div className="bookTable">
+                    <div style={{ marginBottom: 16 }}>
+                        <Button type="primary"
+                        >添加</Button>
+                        &nbsp;&nbsp;
+                        <Button type="primary"
+                                disabled={!hasSelected}
+                        >删除</Button>
+                    </div>
                     <Table rowSelection={rowSelection}
                            columns={this.state.columns}
                            dataSource={this.state.data}
                     />
                 </div>
             </div>
-        );
+        )
     }
 }
-export default UserBookManageOrder;
+export default BookManage;

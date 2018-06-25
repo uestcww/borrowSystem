@@ -1,14 +1,16 @@
 import React from 'react';
-import { Input, Table, Row, Col, Radio, Button } from 'antd';
+import { Table, Button, Input } from 'antd';
 
-import "../../../css/circulation/ciasher/CiasherBorrow.css";
+import "../../../css/circulation/manage/readerManage.css";
 
-const RadioGroup = Radio.Group;
+const Search = Input.Search;
 
-class CashierBorrow extends React.Component{
+class ReaderManage extends React.Component{
     constructor(props){
         super(props);
         this.state = {
+            selectedRowKeys: [],
+            loading: false,
             data: [
                 {
                     key: "0",
@@ -278,48 +280,42 @@ class CashierBorrow extends React.Component{
                 //     )
                 // }
             ],
-            optionRadio: 1,
-            bookDisabled: true,
         };
     }
 
-    handleOptionValue(e){
+    onSelectChange(value) {
         this.setState({
-            optionRadio: e.target.value
-        });
+            selectedRowKeys: value
+        })
     }
 
     render(){
+        const rowSelection = {
+            selectedRowKeys: this.state.selectedRowKeys,
+            onChange: this.onSelectChange.bind(this),
+        };
+        const hasSelected = this.state.selectedRowKeys.length > 0;
         return(
-            <div className="borrowBodyDiv">
-                <div className="borrowQueryDiv">
-                    <div>
-                        <Row>
-                            <Col span={2}>外借/续借：</Col>
-                            <Col span={2}>
-                                <RadioGroup onChange={this.handleOptionValue.bind(this)} value={this.state.optionRadio}>
-                                    <Radio value={1}>外借</Radio>
-                                    <Radio value={2}>续借</Radio>
-                                </RadioGroup>
-                            </Col>
-                            <Col span={2}></Col>
-                            <Col span={2}>读者条形码：</Col>
-                            <Col span={2}><Input /></Col>
-                            <Col span={1}></Col>
-                            <Col span={2}><Button>确定</Button></Col>
-                            <Col span={2}></Col>
-                            <Col span={2}>书籍条形码：</Col>
-                            <Col span={2}><Input disabled={this.state.bookDisabled} /></Col>
-                            <Col span={1}></Col>
-                            <Col span={2}><Button disabled={this.state.bookDisabled}>确定</Button></Col>
-                        </Row>
-                    </div>
-                    <div>
-
-                    </div>
+            <div>
+                <div>
+                    <Search
+                        placeholder="请输入要搜索的读者"
+                        onSearch={value => console.log(value)}
+                        enterButton
+                        className="readerSearchInput"
+                    />
                 </div>
-                <div className="borrowInfoDiv">
-                    <Table columns={this.state.columns}
+                <div className="readerTable">
+                    <div style={{ marginBottom: 16 }}>
+                        <Button type="primary"
+                        >添加</Button>
+                        &nbsp;&nbsp;
+                        <Button type="primary"
+                                disabled={!hasSelected}
+                        >删除</Button>
+                    </div>
+                    <Table rowSelection={rowSelection}
+                           columns={this.state.columns}
                            dataSource={this.state.data}
                     />
                 </div>
@@ -327,5 +323,4 @@ class CashierBorrow extends React.Component{
         )
     }
 }
-export default CashierBorrow;
-
+export default ReaderManage;

@@ -427,8 +427,8 @@ class UserManage extends React.Component{
     handleDeleteUser(){
         const that = this;
         confirm({
-            title: '您是否确认要删除这些内容',
-            content: 'balabalabala',
+            title: '您是否确认要删除这些内容？',
+            content: '',
             onOk() {
                 return new Promise((resolve) => {
                     setTimeout(resolve, 1000);

@@ -1,15 +1,4 @@
-.bodyDiv{
-    border: 1px red solid;
+.borrowBodyDiv{
+    margin: 20px;
 }
-.queryDiv{
-    border: 1px green solid;
-    width: 30%;
-    display: inline-block;
-    vertical-align: top;
-}
-.infoDiv{
-    border: 1px blue solid;
-    width: 70%;
-    display: inline-block;
-    vertical-align: top;
-}
+
