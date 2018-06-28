@@ -1,78 +1,57 @@
 import React from 'react';
-import { Table, Button, Input } from 'antd';
+import { Table, Button, Input, Select, Row, Col } from 'antd';
 
 import "../../../css/circulation/manage/bookManage.css";
 
-const Search = Input.Search;
+const Option = Select.Option;
 
 class BookManage extends React.Component{
     constructor(props){
         super(props);
         this.state = {
+            bookSelect: "title",
             selectedRowKeys: [],
             loading: false,
-            data: [
-                {
-                    key: "0",
-                    id: "001",
-                    username: "我就会瞎打",
-                    roleId: "a"
-                },
-                {
-                    key: "1",
-                    id: "002",
-                    username: "我只会瞎打",
-                    roleId: "bb"
-                },
-                {
-                    key: "2",
-                    id: "003",
-                    username: "我就会瞎玩",
-                    roleId: "ccc"
-                },
-                {
-                    key: "3",
-                    id: "004",
-                    username: "我只会瞎玩",
-                    roleId: "dddd"
-                },
-                {
-                    key: "4",
-                    id: "005",
-                    username: "天天吃鸡",
-                    roleId: "eeeee"
-                },
-                {
-                    key: "5",
-                    id: "006",
-                    username: "天天素材库",
-                    roleId: "ffffff"
-                },
-                {
-                    key: "6",
-                    id: "007",
-                    username: "逗鱼时刻",
-                    roleId: "ggggggg"
-                },
-                {
-                    key: "7",
-                    id: "008",
-                    username: "煮鸡时刻",
-                    roleId: "hhhhhhhh"
-                }
-            ],
             columns: [
                 {
-                    title: '代理键id',
+                    title: '书编号',
                     dataIndex: 'id',
                 },
                 {
-                    title: '用户名',
+                    title: '书名',
                     dataIndex: 'username',
                     key: "username",
                 },
                 {
-                    title: '用户组id',
+                    title: '作者',
+                    dataIndex: 'roleId',
+                },
+                {
+                    title: 'ISBN',
+                    dataIndex: 'roleId',
+                },
+                {
+                    title: '出版社',
+                    dataIndex: 'roleId',
+                },
+                {
+                    title: '索书号',
+                    dataIndex: 'roleId',
+                },
+                {
+                    title: '作者',
+                    dataIndex: 'roleId',
+                },
+                {
+                    title: '作者',
+                    dataIndex: 'roleId',
+                },
+                {
+                    title: '作者',
+                    dataIndex: 'roleId',
+                },
+                {
+                    title: '作者',
                     dataIndex: 'roleId',
                 },
                 {
@@ -84,6 +63,12 @@ class BookManage extends React.Component{
                 }
             ],
         };
+    }
+
+    handleSelectChange(value) {
+        this.setState({
+            bookSelect: value,
+        })
     }
 
     onSelectChange(value) {
@@ -100,15 +85,31 @@ class BookManage extends React.Component{
         const hasSelected = this.state.selectedRowKeys.length > 0;
         return(
             <div>
-                <div>
-                    <Search
-                        placeholder="请输入要搜索的书籍"
-                        onSearch={value => console.log(value)}
-                        enterButton
-                        className="bookSearchInput"
-                    />
+                <div className="bookQueryDiv">
+                    <Row>
+                        <Col span={8}></Col>
+                        <Col span={5}>
+                            <Input
+                                placeholder="请输入要搜索的书籍"
+                                type="text"
+                            />
+                        </Col>
+                        <Col span={2}>
+                            <Select value={this.state.bookSelect} style={{ width: 150 }} onChange={this.handleSelectChange.bind(this)}>
+                                <Option value="title">标题</Option>
+                                <Option value="author">作者（或责任人）</Option>
+                                <Option value="callNumber">索书号</Option>
+                                <Option value="isbn">ISBN号</Option>
+                                <Option value="barcode">条形码</Option>
+                            </Select>
+                        </Col>
+                        <Col span={3}>
+                            <Button type="primary" >搜索</Button>
+                        </Col>
+                        <Col span={6}></Col>
+                    </Row>
                 </div>
-                <div className="bookTable">
+                <div className="bookTableDiv">
                     <div style={{ marginBottom: 16 }}>
                         <Button type="primary"
                         >添加</Button>

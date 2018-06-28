@@ -64,10 +64,12 @@ class HomePage extends React.Component{
                 <Menu.Item key="logout"><Icon type="logout" />&nbsp;登出</Menu.Item>
             </Menu>
         );
+        const clientHeight = document.body.clientHeight;
+        let backgroundImg = require("../../img/background.png");
         return(
-            <div>
+            <div className="homepageDiv" style={{height: clientHeight,}}>
                 <div style={{marginTop: 10}}>
-                    <img src="./src/img/title.png" style={{width: "35%"}}/>
+                    <img src={require("../../img/title.png")} style={{width: "35%"}}/>
                     <div className="username">
                         <Dropdown overlay={userMenu}>
                             <Link to="" className="ant-dropdown-link">{this.state.username}<Icon type="down" /></Link>
@@ -105,8 +107,8 @@ class HomePage extends React.Component{
                             <SubMenu title={<span>出纳</span>}>
                                 <Menu.Item key="borrow"><Link to="/homePage/cashier/borrow">外借/续借</Link></Menu.Item>
                                 <Menu.Item key="return"><Link to="/homePage/cashier/return">还回</Link></Menu.Item>
-                                <Menu.Item key="lost">丢失</Menu.Item>
-                                <Menu.Item key="finesDeal">罚金处理</Menu.Item>
+                                <Menu.Item key="lost"><Link to="/homePage/cashier/bookLost">丢失</Link></Menu.Item>
+                                <Menu.Item key="finesDeal"><Link to="/homePage/cashier/finesManage">罚金处理</Link></Menu.Item>
                             </SubMenu>
                             <Menu.Item key="bookSearch"><Link to="/homePage/BookManage">书刊管理</Link></Menu.Item>
                             <Menu.Item key="userSearch"><Link to="/homePage/ReaderManage">读者管理</Link></Menu.Item>

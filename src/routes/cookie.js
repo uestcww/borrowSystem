@@ -18,6 +18,8 @@ import HomePageCheckStatistic from "../templates/homepage/HomePageCheckStatistic
 import ReaderManage from "../templates/circulation/manage/ReaderManage";
 import borrowOrder from "../templates/circulation/statistics/borrowOrder";
 import returnBook from "../templates/circulation/cashier/returnBook";
+import bookLost from "../templates/circulation/cashier/bookLost";
+import FinesManage from "../templates/circulation/cashier/FinesManage";
 
 class Routes extends React.Component{
     render() {
@@ -37,10 +39,16 @@ class Routes extends React.Component{
                     {/*流通模块*/}
                     <Route path="/homePage/cashier/borrow" component={CashierBorrow} />
                     <Route path="/homePage/cashier/return" component={returnBook} />
+                    <Route path="/homePage/cashier/bookLost" component={bookLost} />
+                    <Route path="/homePage/cashier/finesManage" component={FinesManage} />
                     <Route path="/homePage/BookManage" component={BookManage} />
                     <Route path="/homePage/ReaderManage" component={ReaderManage} />
                     <Route path="/homePage/userManageCount" component={UserManageOrder} />
                     <Route path="/homePage/borrowCount" component={borrowOrder} />
+
+
+
+
                     {/*用户管理模块*/}
                     <Route path="/homePage/userManage" component={UserManage} />
                     {/*Excel书目数据导入模块*/}

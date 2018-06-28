@@ -1,10 +1,10 @@
 const path = require('path');
 const ROOT_PATH = path.resolve(__dirname);
 const SRC_PATH = path.resolve(ROOT_PATH, 'src');
-const baseConfig = require('./webpack.base.config.js')
+const baseConfig = require('./webpack.base.config.js');
 const webpack = require('webpack');
 const HtmlwebpackPlugin = require('html-webpack-plugin');
-const merge = require('webpack-merge')
+const merge = require('webpack-merge');
 
 const prodConfig = merge(baseConfig, {
     plugins: [

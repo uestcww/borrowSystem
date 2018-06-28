@@ -7,6 +7,12 @@
 .children{
     height: 885px;
 }
+.homepageDiv{
+    border: 1px gray solid;
+    font-size: 18px;
+    background-image:url(../img/background.png);
+    background-size:100% 100%;
+}
 /*Footer*/
 .footer{
     text-align: center;

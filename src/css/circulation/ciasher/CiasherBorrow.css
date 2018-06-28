@@ -1,4 +1,23 @@
 .borrowBodyDiv{
+}
+.borrowQueryDiv{
     margin: 20px;
 }
-
+.borrowInfoDiv{
+    margin-right: 20px;
+    margin-left: 20px;
+}
+.borrowInfoImgDiv{
+    display: inline-block;
+    vertical-align: top;
+}
+.borrowInfoTextDiv{
+    margin-top: 50px;
+    display: inline-block;
+    margin-left: 10%;
+    width: 20%;
+}
+.borrowInfoBarcode{
+    width: 214px;
+    margin-left: 36px;
+}

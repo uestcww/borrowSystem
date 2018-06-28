@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input, Button, Modal, message } from "antd";
+import { Input, Button, Modal, message, Row, Col } from "antd";
 
 import "../../../css/circulation/ciasher/returnBook.css";
 
@@ -10,6 +10,9 @@ class returnBook extends React.Component{
             visible: false,
             confirmLoading: false,
             bookBarcode: "",
+            bookName: "",
+            press: "",
+            author: "",
         };
     }
 
@@ -20,13 +23,35 @@ class returnBook extends React.Component{
     }
 
     handleButtonClick(){
-        if(this.state.bookBarcode !== ""){
-            this.setState({
-                visible: true,
-            });
-        }else{
+        if(this.state.bookBarcode === ""){
             message.warning("书目条形码为空！");
+            return;
         }
+        let jsonObj = {
+            searchType: 5,
+            searchStr: this.state.bookBarcode,
+        };
+        let jsonString = JSON.stringify(jsonObj);
+        let xmlhttp;
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function(){
+            if(xmlhttp.readyState===4&&xmlhttp.status===200){
+                let responseObj = JSON.parse(xmlhttp.responseText);
+                if(responseObj.code === "00"){
+                    this.setState({
+                        visible: true,
+                        bookName: responseObj.data[0].title,
+                        press: responseObj.data[0].publisher,
+                        author: responseObj.data[0].author,
+                    })
+                }else if(responseObj.code === "01"){
+                    message.warning(responseObj.msg);
+                }
+            }
+        }.bind(this);
+        xmlhttp.open("POST","/main/searchBooks",true);
+        xmlhttp.setRequestHeader("Content-Type","application/json");
+        xmlhttp.send(jsonString);
     }
 
     handleModalOk(){
@@ -34,39 +59,74 @@ class returnBook extends React.Component{
             confirmLoading: true,
         });
         setTimeout(() => {
-            this.setState({
-                visible: false,
-                confirmLoading: false,
-            });
+            let url = "/main/returnBooks/"+this.state.bookBarcode;
+            let xmlhttp;
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function(){
+                if(xmlhttp.readyState===4&&xmlhttp.status===200){
+                    let responseObj = JSON.parse(xmlhttp.responseText);
+                    message.warning(responseObj.msg);
+                    this.setState({
+                        confirmLoading: false,
+                    });
+                    if(responseObj.code === "00"){
+                        this.setState({
+                            visible: false,
+                            bookBarcode: "",
+                        });
+                    }
+                }
+            }.bind(this);
+            xmlhttp.open("GET",url,true);
+            xmlhttp.setRequestHeader("Content-Type","application/json");
+            xmlhttp.send();
         }, 600);
     }
 
     handleModalCancel(){
         this.setState({
             visible: false,
+            bookName: "",
+            bookBarcode: "",
+            press: "",
+            author: "",
         });
     }
 
     render(){
         return(
             <div>
-                <Modal title="确认还回"
+                <Modal title="确认还回？"
                        visible={this.state.visible}
                        onOk={this.handleModalOk.bind(this)}
                        confirmLoading={this.state.confirmLoading}
                        onCancel={this.handleModalCancel.bind(this)}
+                       okText="确定还回"
+                       cancelText="取消"
                 >
-                    <p>Content of the modal</p>
+                    <Row>
+                        <Col span={4}>书籍名称：</Col>
+                        <Col span={20}>《{this.state.bookName}》</Col>
+                    </Row>
+                    <Row>
+                        <Col span={4}>作者：</Col>
+                        <Col span={20}>{this.state.author}</Col>
+                    </Row>
+                    <Row>
+                        <Col span={4}>出版社：</Col>
+                        <Col span={20}>{this.state.press}</Col>
+                    </Row>
                 </Modal>
                 <div className="returnBookDiv">
                     <div className="returnBookInputDiv">
-                        <Input placeholder="这里输入书籍条形码"
+                        <Input type="text"
+                               placeholder="这里输入书籍条形码"
                                value={this.state.bookBarcode}
                                onChange={this.handleInputChange.bind(this)}
                         />
                     </div>
                     <div className="returnBookButtonDiv">
-                        <Button onClick={this.handleButtonClick.bind(this)}>还回</Button>
+                        <Button type="primary" onClick={this.handleButtonClick.bind(this)}>还回</Button>
                     </div>
                 </div>
             </div>
