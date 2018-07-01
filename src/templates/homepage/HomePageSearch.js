@@ -45,7 +45,7 @@ class HomePageSearch extends React.Component{
                     let tableData = this.state.data;
                     let dataObj;
                     for (let i = 0;i<dataList.length;i++){
-                        dataObj = Object.assign({},dataList[i],{key:i})
+                        dataObj = Object.assign({},dataList[i],{key:i});
                         tableData.push(dataObj);
                     }
                     this.setState({

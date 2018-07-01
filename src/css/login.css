@@ -1,5 +1,7 @@
 .loginContent{
     width:100%;
+    background-image:url(../img/background.png);
+    background-size:100% 100%;
 }
 .alertContent{
     font-size: 12px;

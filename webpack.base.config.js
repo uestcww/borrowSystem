@@ -12,15 +12,8 @@ module.exports = {
             aggregateTimeout: 300,
             poll: 1000
         },
-        port: '8080', //设置端口号
-        // proxy: {
-        //     '/library/**': {
-        //         target: 'http://101.37.35.1:80',
-        //         secure: false
-        //     }
-        // }
-
-    } ,
+        port: '8080',
+    },
     entry: {
         index: path.resolve(SRC_PATH, 'index.js')
     },
@@ -45,16 +38,9 @@ module.exports = {
                 include: SRC_PATH,
                 exclude: path.resolve(ROOT_PATH, 'node_modules')
             },
-            // {
-            //     test: /\.css$/,
-            //     loader: ExtractTextPlugin.extract("css-loader")
-            // },
             {
                 test: /\.css$/,
-                use: ['css-hot-loader'].concat(ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use: 'css-loader'
-                })),
+                loader: ExtractTextPlugin.extract("css-loader")
             },
             {
                 test: /\.scss$/,
@@ -62,16 +48,13 @@ module.exports = {
             },
             {
                 test: /\.(png|jpg|gif|svg)$/,
-                // include: path.resolve(SRC_PATH, 'img'),
-                use: [
-                    {
-                        loader: 'url-loader',
-                        options: {
-                            limit: 8192,
-                            name: 'images/[name].[hash:5].[ext]',
-                        },
+                use: {
+                    loader: 'url-loader',
+                    options: {
+                        limit: 8192,
+                        name: 'images/[name].[hash:5].[ext]',
                     },
-                ],
+                },
             },
             {
                 test: /\.json$/,
