@@ -10,6 +10,7 @@ class HomePageSearch extends React.Component{
         this.state = {
             selectValue: "",
             selectOption: "book",
+            data:[]
         }
     }
 

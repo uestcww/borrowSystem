@@ -1,74 +1,195 @@
 import React from 'react';
 import { Select } from 'antd';
-import { Input } from 'antd';
-import { Button } from 'antd';
+import { Form, Button, Input } from "antd";
+import { DatePicker } from 'antd';
 import { Table } from 'antd';
 import { Router, Route, hashHistory} from 'react-router';
 import {message} from "antd/lib/index";
 import "../../css/homepage.css";
 import "../../css/homePageCheckStatistic.css"
 
-const Option = Select.Option;
+const FormItem = Form.Item;
+const { RangePicker} = DatePicker;
 
-const columns = [{
-    title: '书目名称',
-    dataIndex: 'bookIndex',
-    //width: 150,
-}, {
-    title: '种数',
-    dataIndex: 'title',
-    //width: 150,
-}, {
-    title: '册数',
-    dataIndex: 'author',
-    //width:150,
-},{
-    title: '金额',
-    dataIndex: 'isbn',
-    //width: 150,
-},{
-    title: '金额百分比',
-    dataIndex: 'publisher',
-    //width: 150,
-},{
-    title: '备注',
-    dataIndex: 'callNumber',
-    //width: 150,
-}];
-const data = [];
+
 class HomePageOrderStatistic extends React.Component{
     constructor(props){
         super(props);
         this.state={
-            selectOption3: "Chinese",
-            selectOption: "title",
-            selectOption2:"all",
+            data:[],
+            columns : [ {
+                title: '标题',
+                dataIndex: 'title',
+                //width: 150,
+            }, {
+                title: '作者',
+                dataIndex: 'author',
+                //width:150,
+            },{
+                title: '索书号',
+                dataIndex: 'callNumber',
+                //width: 150,
+            },{
+                title: 'isbn号',
+                dataIndex: 'isbn',
+                //width: 150,
+            },{
+                title: '出版社',
+                dataIndex: 'publisher',
+                //width: 150,
+            },{
+                title: '出版日期',
+                dataIndex: 'publishDate',
+                //width: 150,
+            },{
+                title: '书的馆藏数量',
+                dataIndex: 'count',
+                //width: 150,
+            },{
+                title: '单价',
+                dataIndex: 'price',
+                //width: 150,
+            },{
+                title: '页码',
+                dataIndex: 'pages',
+                //width: 150,
+            },{
+                title: '书的来源',
+                dataIndex: 'bookSource',
+                //width: 150,
+            },{
+                title:'订购人',
+                dataIndex:'person'
+            }],
+            batchNumber:null,
+            person:null,
+            bookSource:"",
+            startDate:"",
+            endDate:"",
+            bookSourceAlert:"",
+            startDateAlert:"",
+            endDateAlert:"",
+            pageNumber:1,
+            kindCount:0
         }
     }
-    handleOrderStatisticSearchChange(option){
+
+    handleDateChange(date,dateString) {
         this.setState({
-            selectOption2:option
+            endDate:dateString
         })
     }
-    handleOrderStatisticSelectChange(option) {
+    handleBeginDateChange(date,dateString){
         this.setState({
-            selectOption: option,
-        })
-    }
-    handleOrderStatisticSelect3Change(option) {
-        this.setState({
-            selectOption3: option,
+            startDate:dateString
         })
     }
 
+
+
+    handleBookSourceOnBlur(e) {
+        if (this.state.bookSource == "") {
+            this.setState({
+                bookSourceAlert: "请输入书来源"
+            })
+        } else {
+            this.setState({
+                bookSourceAlert: ""
+            })
+        }
+    }
+    handleStartDateOnBlur() {
+        if (this.state.startDate == "") {
+            this.setState({
+                startDateAlert: "请选择开始时间"
+            })
+        } else {
+            this.setState({
+                startDateAlert: ""
+            })
+        }
+    }
+    handleEndDateOnBlur(e) {
+        if (this.state.endDate == "") {
+            this.setState({
+                endDateAlert: "请选择结束时间"
+            })
+        } else {
+            this.setState({
+                endDateAlert: ""
+            })
+        }
+    }
+    handleBatchNumberChange(e){
+        if (e.target.value==""){
+            this.setState({
+                batchNumber:null
+            })
+        } else {
+            this.setState({
+                batchNumber:e.target.value
+            })
+        }
+
+
+    }
+    handlePersonChange(e) {
+        if (e.target.value=="") {
+            this.setState({
+                person: null
+
+            })
+        }else {
+            this.setState({
+                person: e.target.value
+            })
+        }
+    }
+    handleBookSourceChange(e) {
+        this.setState({
+            bookSource:e.target.value
+        })
+    }
+    handleStartDateChange(e){
+        this.setState({
+            startDate:e.target.value
+        })
+
+    }
+    handleEndDateChange(e){
+        this.setState({
+            endDate:e.target.value
+        })
+
+    }
+
     handleOrderStatisticClick(e){
-       /* hashHistory.push({
-            pathname:""
-        })*/
+        /* hashHistory.push({
+             pathname:""
+         })*/
+        let flag = false;
+        if (this.state.bookSource==""){
+            flag = true;
+            this.setState({bookSourceAlert:"请输入图书来源"})
+        }
+        if (this.state.startDate===""){
+            flag = true;
+            this.setState({startDateAlert:"请选择开始时间"})
+        }
+        if (this.state.endDate===""){
+            flag = true;
+            this.setState({endDateAlert:"请选择结束时间"})
+        }
+        if(flag){
+            return;
+        }
         const jsonObj = {
-            option2: this.state.selectOption2,
-            option: this.state.selectOption,
-            option3:this.state.selectOption3
+            batchNumber:this.state.batchNumber,
+            person:this.state.person,
+            bookSource:this.state.bookSource,
+            startDate:this.state.startDate,
+            endDate:this.state.endDate,
+            pageNumber:this.state.pageNumber
         };
         const jsonString = JSON.stringify(jsonObj);
         let xmlhttp;
@@ -81,82 +202,155 @@ class HomePageOrderStatistic extends React.Component{
                     return;
                 }else if (responseObj.code==="00"){
                     let dataList = responseObj.data;
-                    let tableData = this.state.data;
+                    let tableData;
+                    tableData = [];
                     let dataObj;
                     for (let i = 0;i<dataList.length;i++){
                         dataObj = Object.assign({},dataList[i],{key:i})
                         tableData.push(dataObj);
                     }
                     this.setState({
-                        data:tableData
-                    });
-
+                        data:tableData,
+                        totalPage:responseObj.totalPage,
+                        kindCount:tableData[0].kindCount
+                    },this.setState({
+                        data:[]
+                    }));
                 }
             }
         }.bind(this);
-        xmlhttp.open("POST","/main/searchBooks",false);
+        xmlhttp.open("POST","order/orderStatistics",false);
         xmlhttp.setRequestHeader("Content-Type","application/json");
         xmlhttp.send(jsonString);
-    }
-    handleEnterClick(e){
 
     }
+    handleExcleClick(e){
+        window.open("order/orderExportExcel")
 
+    }
     render(){
         const clientHeight = document.body.clientHeight;
+        const that=this;
         const formStyle = {
             width:"100%",
             marginLeft: "auto",
             marginRight: "auto",
         }
+        const page={
+            onChange: function(page,pageSize){
+                const jsonObj = {
+                    batchNumber:that.state.batchNumber,
+                    person:that.state.person,
+                    bookSource:that.state.bookSource,
+                    startDate:that.state.startDate,
+                    endDate:that.state.endDate,
+                    pageNumber:page
+                };
+                const jsonString = JSON.stringify(jsonObj);
+                let xmlhttp;
+                xmlhttp=new XMLHttpRequest();
+                xmlhttp.onreadystatechange=function() {
+                    if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                        let responseObj = JSON.parse(xmlhttp.responseText);
+                        if (responseObj.code==="01") {
+                            message.warning("输入有误");
+                            return;
+                        }else if (responseObj.code==="00"){
+                            let dataList = responseObj.data;
+                            let tableData= [];
+                            let dataObj;
+                            for (let i = 0;i<dataList.length;i++){
+                                dataObj = Object.assign({},dataList[i],{key:i})
+                                tableData.push(dataObj);
+                            }
+                            that.setState({
+                                pageNumber:page,
+                                data:tableData,
+                                kindCount:tableData[0].kindCount,
+                            },that.setState({
+                                data:[]
+                            }));
+
+
+                        }
+                    }
+                }
+                xmlhttp.open("POST","order/orderStatistics",false);
+                xmlhttp.setRequestHeader("Content-Type","application/json");
+                xmlhttp.send(jsonString);
+            },
+            total:that.state.kindCount,
+            pageSize:8
+        }
         return(
 
-            <div className="shoppingContent1" style={{height: clientHeight}}>
-                <div className="shoppingCondition1">
-                    <label className="language1">选择操作员：
-            <Select value={this.state.selectOption3} style={{ width: 150 }} onChange={this.handleOrderStatisticSelect3Change.bind(this)}>
-                <Option value="Chinese">中文</Option>
-                <Option value="English">英文</Option>
-            </Select>
-            </label>
-            <label className="searchDatabase1">选择订购批号：
-                <Select value={this.state.selectOption2} style={{ width: 150 }} onChange={this.handleOrderStatisticSearchChange.bind(this)}>
-                    <Option value="all">所有</Option>
-                    <Option value="orderDatabase">订购库</Option>
-                    <Option value="checkDatabase">验收库</Option>
-                    <Option value="afterShopDatabase">采后库</Option>
-                    <Option value="centerDatabase">中央库</Option>
-                    <Option value="recordDatabase">套录库</Option>
-                    <Option value="workDatabase">工作库</Option>
-                </Select>
-            </label>
-                    <label className="searchWay1">选择订购单位：
-                        <Select value={this.state.selectOption} style={{ width: 150 }} onChange={this.handleOrderStatisticSelectChange.bind(this)}>
-                            <Option value="title">标题</Option>
-                            <Option value="author">作者或责任人</Option>
-                            <Option value="callNumber">索书号</Option>
-                            <Option value="isbn">isbn</Option>
-                            <Option value="barCode">书的条形码</Option>
-                        </Select>
-                    </label>
-                </div>
-               {/* <div className="searchCondition1">
-                    <Search
-                        type="text"
-                        placeholder="请输入查询内容"
-                        onSearch={this.handleEnterClick.bind(this)}
-                        style={{ width: 800 }}
-                        value={this.state.selectValue}
-                        enterButton
-                        onChange={this.handleOrderStatisticSearchChange.bind(this)}
-                    />
-                    <br /><br />
-                </div>*/}
-                <div className="newCondition1">
-                    <Button type="newShopping" onClick={this.handleOrderStatisticClick.bind(this)}>订购统计</Button>
+            <div className="shoppingContent1">
+                <div className="shoppingLine1">
+                    <div className="shoppingCondition1">
+                        <div className="input">
+                            <Form>
+                                <FormItem className="batchNumber"
+                                          label="订购批号"
+                                          labelCol={{ span: 8 }}
+                                          wrapperCol={{ span: 16 }}
+                                >
+                                    <Input size="default"
+                                           value={this.state.batchNumber}
+                                           onChange={this.handleBatchNumberChange.bind(this)}
+                                    />
+                                </FormItem>
+                                <FormItem className="person"
+                                          label="订购人"
+                                          labelCol={{ span: 8 }}
+                                          wrapperCol={{ span: 16 }}
+                                >
+                                    <Input size="default"
+                                           value={this.state.person}
+                                           onChange={this.handlePersonChange.bind(this)}
+                                    />
+                                </FormItem>
+                                <FormItem className="bookSource"
+                                          label="书来源"
+                                          labelCol={{ span: 9 }}
+                                          wrapperCol={{ span:15 }}
+                                >
+                                    <Input size="default"
+                                           value={this.state.bookSource}
+                                           onChange={this.handleBookSourceChange.bind(this)}
+                                           onBlur={this.handleBookSourceOnBlur.bind(this)}
+                                    />
+                                    <span className="alertContent">{this.state.bookSourceAlert}</span>
+                                </FormItem>
+                            </Form>
+                        </div>
+                        <div className="date">
+                            <span>开始时间： </span>
+                            <DatePicker placeholder="请选择开始时间"
+                                        onChange={this.handleBeginDateChange.bind(this)}
+                                        onBlur={this.handleStartDateOnBlur.bind(this)}/>
+                            <span className="alertContent">{this.state.startDateAlert}</span>
+                            <span className="endDate">结束时间：</span>
+                            <DatePicker placeholder="请选择结束时间"
+                                        onChange={this.handleDateChange.bind(this)}
+                                        onBlur={this.handleEndDateOnBlur.bind(this)}/>
+                            <span className="alertContent">{this.state.endDateAlert}</span>
+                        </div>
+                    </div>
+                    <div className="newCondition1">
+                        <Button  type="newShopping"
+                                 onClick={this.handleOrderStatisticClick.bind(this)}>订购统计</Button>
+                    </div>
                 </div>
                 <div className="tableCondition1" style={formStyle}>
-                    <Table columns={columns} dataSource={data} pagination={{ pageSize: 50 }} />
+                    <Table columns={this.state.columns} dataSource={this.state.data} pagination={page} />
+                </div>
+                <div className="under">
+                    <div className="kindCount">
+                        <span>书的种类数量： {this.state.kindCount}</span>
+                    </div>
+                    <div className="e">
+                        <Button onClick={this.handleExcleClick.bind(this)}>导出Excel</Button>
+                    </div>
                 </div>
             </div>
         )

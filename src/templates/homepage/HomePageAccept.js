@@ -14,67 +14,54 @@ class HomePageAccept extends React.Component{
         this.state={
             currentColumn: {},
             data: [
-                {
-                    key: "0",
-                    id: "001",
-                    username: "我就会瞎打",
-                    roleId: "a"
-                },
-                {
-                    key: "1",
-                    id: "002",
-                    username: "我只会瞎打",
-                    roleId: "bb"
-                },
-                {
-                    key: "2",
-                    id: "003",
-                    username: "我就会瞎玩",
-                    roleId: "ccc"
-                },
-                {
-                    key: "3",
-                    id: "004",
-                    username: "我只会瞎玩",
-                    roleId: "dddd"
-                },
-                {
-                    key: "4",
-                    id: "005",
-                    username: "天天吃鸡",
-                    roleId: "eeeee"
-                },
-                {
-                    key: "5",
-                    id: "006",
-                    username: "天天素材库",
-                    roleId: "ffffff"
-                },
-                {
-                    key: "6",
-                    id: "007",
-                    username: "逗鱼时刻",
-                    roleId: "ggggggg"
-                },
-                {
-                    key: "7",
-                    id: "008",
-                    username: "煮鸡时刻",
-                    roleId: "hhhhhhhh"
-                }
             ],
             columns: [
                 {
-                    title: '代理键id',
-                    dataIndex: 'id',
-                },
-                {
-                    title: '用户名',
-                    dataIndex: 'username',
-                },
-                {
-                    title: '用户组id',
-                    dataIndex: 'roleId',
+                    title:'序号',
+                    dataIndex:'key',
+                }, {
+                    title: '书编号',
+                    dataIndex: 'bookIndex',
+                    //width: 150,
+                }, {
+                    title: '标题',
+                    dataIndex: 'title',
+                    //width: 150,
+                }, {
+                    title: '作者',
+                    dataIndex: 'author',
+                    //width:150,
+                },{
+                    title: 'isbn',
+                    dataIndex: 'isbn',
+                    //width: 150,
+                },{
+                    title: '出版社',
+                    dataIndex: 'publisher',
+                },{
+                    title: '订单批号',
+                    dataIndex: 'batchNumber',
+                    //width: 150,
+                },{
+                    title: '订书总价格',
+                    dataIndex: 'totalPrice',
+                    //width: 150,
+                },{
+                    title: '订购人',
+                    dataIndex: 'orderPerson',
+                    //width: 150,
+                },{
+                    title: '订购数量',
+                    dataIndex: 'orderCount',
+                    //width: 150,
+                },{
+                    title: '书的价格',
+                    dataIndex: 'price',
+                    //width: 150,
+                },{
+                    title: '订购书来源',
+                    dataIndex: 'bookSource',
+                    //width: 150,
                 },
                 {
                     title: "操作",
@@ -84,13 +71,28 @@ class HomePageAccept extends React.Component{
                     )
                 }
             ],
-            userAddModalVisible: false,
+            AcceptModifyModalVisible: false,
             count:"",
+            selectValue: "",
+            selectOption: "1",
+            pageNumber:1,
+            batchNumber:1,
+            totalCount2:0,
+            orderCount:"",
+            ifChecked:0
         }
+    }
+    showUserAcceptModal(index){
+        this.setState({
+            AcceptModifyModalVisible: true,
+            batchNumber:index.batchNumber,
+            orderCount:index.orderCount,
+            ifChecked:index.ifChecked
+        });
     }
     handleCountChange(e){
         this.setState({
-            count:e.target.value
+            count:e.target.value,
         })
     }
     handleShoppingSearchChange(e){
@@ -98,10 +100,12 @@ class HomePageAccept extends React.Component{
             selectValue:e.target.value
         })
     }
+
     handleEnterClick(e){
         const jsonObj = {
-            value: this.state.selectValue,
-            //option: this.state.selectOption,
+            searchType: this.state.selectOption,
+            searchStr: this.state.selectValue,
+            pageNumber:this.state.pageNumber
         };
         const jsonString = JSON.stringify(jsonObj);
         let xmlhttp;
@@ -111,61 +115,69 @@ class HomePageAccept extends React.Component{
                 let responseObj = JSON.parse(xmlhttp.responseText);
                 if (responseObj.code==="01") {
                     message.warning("输入有误");
-                    return;
+
                 }else if (responseObj.code==="00"){
                     let dataList = responseObj.data;
-                    let tableData = this.state.data;
+                    let tableData = [];
+                    let j = dataList.length;
                     let dataObj;
                     for (let i = 0;i<dataList.length;i++){
-                        dataObj = Object.assign({},dataList[i],{key:i})
+                        dataObj = Object.assign({},dataList[i],{key:i+1});
                         tableData.push(dataObj);
                     }
                     this.setState({
-                        data:tableData
-                    });
+                        data:tableData,
+                        totalPage:responseObj.totalPage,
+                        totalCount2:responseObj.totalCount
+                    },this.setState({
+                        data:[]
+                    }));
 
                 }
             }
         }.bind(this);
-        xmlhttp.open("GET","/main/searchBooks",false);
+        xmlhttp.open("POST","order/searchOrder",false);
         xmlhttp.setRequestHeader("Content-Type","application/json");
         xmlhttp.send(jsonString);
     }
-    showUserAcceptModal(record){
-        //let tempObj = Object.assign({},{password:"",passwordAgain:""},record);
-        this.setState({
-            //currentColumn: tempObj,
-            AcceptModifyModalVisible: true,
-        });
-    }
+
 
     handleModifyAccept(){
-        let currentUser = this.state.currentColumn;
-        console.log(currentUser);
 
-        let jsonObj = {
-            count: currentUser.count,
-            //username: currentUser.username,
-            //password: currentUser.password,
-            //roleId: currentUser.roleId,
-        }
-        let jsonString = JSON.stringify(jsonObj);
+      /*  let currentUser = this.state.currentColumn;
+        console.log(currentUser);*/
+
+
+        const jsonObj = {
+            checkCount: this.state.currentColumn.count,
+            orderBatchNumber:this.state.batchNumber
+        };
+        const jsonString = JSON.stringify(jsonObj);
         let xmlhttp;
+        let a = this.state.currentColumn.count;
+        let b = this.state.batchNumber+"/";
         xmlhttp = new XMLHttpRequest();
         xmlhttp.onreadystatechange = function () {
             if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
                 let responseObj = JSON.parse(xmlhttp.responseText);
+                    if (this.state.ifChecked===1){
+                        message.warning("该订单已验收，无需重复验收");
+                    }else if (this.state.orderCount<this.state.currentColumn.count){
+                        message.warning("订购数量没有那么多")
+                    } else if (responseObj.code=="00") {
+                        this.setState({
+                            AcceptModifyModalVisible: false,
+                            currentColumn: {},
+                        });
+                        message.success("验收成功，订单批号是"+this.state.batchNumber)
+                    } else {
+                    message.warning("验收失败");
 
-                    this.setState({
-                        userInfoModifyModalVisible: false,
-                        currentColumn: {},
-
-                    });
-                    return;
-
+                }
             }
         }.bind(this);
-        xmlhttp.open("POST", "url", false);
+        var url = "order/addCheck/"+b+a
+        xmlhttp.open("GET", url, false);
         xmlhttp.setRequestHeader("Content-Type", "application/json");
         xmlhttp.send(jsonString);
     }
@@ -196,19 +208,63 @@ class HomePageAccept extends React.Component{
             marginTop: 80,
             marginRight: 20,
             marginLeft: 20
-        }
+        };
         const rowSelection = {
             selectedRowKeys: this.state.selectedRowKeys,
             onChange: this.onSelectChange.bind(this),
         };
+        const that = this;
+        const page={
+            onChange: function(page,pageSize){
+                const jsonObj = {
+                    searchType: that.state.selectOption,
+                    searchStr: that.state.selectValue,
+                    pageNumber:page
+                };
+                const jsonString = JSON.stringify(jsonObj);
+                let xmlhttp;
+                xmlhttp=new XMLHttpRequest();
+                xmlhttp.onreadystatechange=function() {
+                    if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                        let responseObj = JSON.parse(xmlhttp.responseText);
+                        if (responseObj.code==="01") {
+                            message.warning("输入有误");
+                            return;
+                        }else if (responseObj.code==="00"){
+                            let dataList = responseObj.data;
+                            let tableData= [];
+                            let dataObj;
+                            for (let i = 0;i<dataList.length;i++){
+                                dataObj = Object.assign({},dataList[i],{key:i+1})
+                                tableData.push(dataObj);
+                            }
+                            that.setState({
+                                pageNumber:page,
+                                data:tableData,
+                                totalCount2:responseObj.totalCount
+                            },that.setState({
+                                data:[]
+                            }));
+
+
+                        }
+                    }
+                }
+                xmlhttp.open("POST","order/searchCheck",false);
+                xmlhttp.setRequestHeader("Content-Type","application/json");
+                xmlhttp.send(jsonString);
+            },
+            total:that.state.totalCount2,
+            pageSize:8
+        }
         return(
             <div>
                 <div className="searchAccept">
                     <Search
                         type="number"
-                        placeholder="请输入索书号"
+                        placeholder="请输入订单批号"
                         enterButton="Search"
-                        size="large"
+                        style={{ width: 400 }}
                         //onSearch={value => console.log(value)}
                         onSearch={this.handleEnterClick.bind(this)}
                         value={this.state.selectValue}
@@ -222,7 +278,6 @@ class HomePageAccept extends React.Component{
                                cancelText="取消"
                                onOk={this.handleModifyAccept.bind(this)}
                                onCancel={this.handleAcceptModifyCancel.bind(this)}
-
                         >
                             <div>
                                 <Row>
@@ -231,7 +286,6 @@ class HomePageAccept extends React.Component{
                                         <Input type="text"
                                                value={this.state.currentColumn.count}
                                                onChange={this.handleModifyAcceptChange.bind(this)}
-
                                         />
                                     </Col>
                                 </Row>
@@ -244,6 +298,7 @@ class HomePageAccept extends React.Component{
                     <Table
                            columns={this.state.columns}
                            dataSource={this.state.data}
+                           pagination={page}
                     />
                 </div>
                 <div className="AcceptReturn">

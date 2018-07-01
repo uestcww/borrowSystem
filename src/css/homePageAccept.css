@@ -1,13 +1,12 @@
 .searchAccept{
-    position: absolute;
-    top: 170px;
-    left: 20px;
-    width: 400px;
+   margin-top: 50px;
+    margin-left: 80px;
 }
 .searchEditable{
-    position: relative;
-    top: 80px;
+  margin-top:-50px;
+
 }
 .AcceptReturn{
     text-align: center;
+    margin-top: 20px;
 }

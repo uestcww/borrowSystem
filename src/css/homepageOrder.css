@@ -9,3 +9,61 @@
     float:left;
     margin-left: 30px;
 }
+.bookIndex{
+    display: inline-block;
+    margin-left: 500px;
+}
+.title{
+    display: inline-block;
+    margin-left: 50px
+}
+.author{
+    display: inline-block;
+    margin-left: 50px
+}
+.isbn{
+    margin-left: 500px;
+    display: inline-block;
+}
+.publisher{
+    display: inline-block;
+    margin-left: 85px
+}
+.price{
+    display: inline-block;
+    margin-left: 50px
+}
+.callNumber{
+    margin-left: 500px;
+    display: inline-block;
+}
+.bindStyle{
+    display: inline-block;
+    margin-left: 50px;
+}
+.format{
+    display: inline-block;
+    margin-left: 50px
+}
+.orderCount{
+    margin-left: 500px;
+    display: inline-block;
+}
+.bookSource{
+    display: inline-block;
+    margin-left: 50px
+}
+.pages{
+    display: inline-block;
+    margin-left: 50px
+}
+.publishDate{
+    display: inline-block;
+    margin-left: 500px;
+}
+.one{
+    margin-top: 50px;
+}
+.two{
+    margin-top: 30px;
+}

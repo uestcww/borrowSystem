@@ -11,61 +11,80 @@ import {message} from "antd/lib/index";
 const Option = Select.Option;
 const Search = Input.Search;
 
-const columns = [{
-    title: '书编号',
-    dataIndex: 'bookIndex',
-    //width: 150,
-}, {
-    title: '标题',
-    dataIndex: 'title',
-    //width: 150,
-}, {
-    title: '作者',
-    dataIndex: 'author',
-    //width:150,
-},{
-    title: 'isbn',
-    dataIndex: 'isbn',
-    //width: 150,
-},{
-    title: '出版社',
-    dataIndex: 'publisher',
-    width: 150,
-},{
-    title: '索书号',
-    dataIndex: 'callNumber',
-    //width: 150,
-},{
-    title: '条形码',
-    dataIndex: 'barCode',
-    width: 150,
-},{
-    title: '出版日期',
-    dataIndex: 'publishDate',
-    //width: 150,
-},{
-    title: '总页码',
-    dataIndex: 'pages',
-    //width: 150,
-},{
-    title: '开本',
-    dataIndex: 'format',
-    //width: 150,
-},{
-    title: '价格',
-    dataIndex: 'price',
-    //width: 150,
-}];
-const data = [];
+
 
 class HomePageCheck extends React.Component{
     constructor(props){
         super(props);
         this.state={
+            data:[],
+            columns : [{
+                title:"序号",
+                dataIndex:"key"
+            },{
+                title: '书编号',
+                dataIndex: 'bookIndex',
+                //width: 150,
+            }, {
+                title: '标题',
+                dataIndex: 'title',
+                //width: 150,
+            }, {
+                title: '作者',
+                dataIndex: 'author',
+                //width:150,
+            },{
+                title: 'isbn',
+                dataIndex: 'isbn',
+                //width: 150,
+            },{
+                title: '出版社',
+                dataIndex: 'publisher',
+
+            },{
+                title: '订单批号',
+                dataIndex: 'batchNumber',
+                //width: 150,
+            },{
+                title: '验收批号',
+                dataIndex: 'checkBatchNumber',
+                //width: 150,
+            },{
+                title: '订书总价格',
+                dataIndex: 'totalPrice',
+                //width: 150,
+            },{
+                title: '验收人',
+                dataIndex: 'checkPerson',
+                //width: 150,
+            },{
+                title: '订购数量',
+                dataIndex: 'orderCount',
+                //width: 150,
+            },{
+                title: '书的价格',
+                dataIndex: 'price',
+                //width: 150,
+            },{
+                title: '订购书来源',
+                dataIndex: 'bookSource',
+                //width: 150,
+            },{
+                title: '验收数量',
+                dataIndex: 'checkCount',
+                //width: 150,
+            },{
+                title: '索书号',
+                dataIndex: 'callNumber',
+                //width: 150,
+            }],
             selectValue: "",
-            selectOption: "title",
+            selectOption: "1",
+            pageNumber:1,
+            totalCount1:0,
         }
     }
+
     handleCheckSearchChange(e){
         this.setState({
             selectValue:e.target.value
@@ -83,8 +102,9 @@ class HomePageCheck extends React.Component{
     }
     handleEnterClick(e){
         const jsonObj = {
-            value: this.state.selectValue,
-            option: this.state.selectOption,
+            searchType: this.state.selectOption,
+            searchStr: this.state.selectValue,
+            pageNumber:this.state.pageNumber
         };
         const jsonString = JSON.stringify(jsonObj);
         let xmlhttp;
@@ -97,46 +117,98 @@ class HomePageCheck extends React.Component{
                     return;
                 }else if (responseObj.code==="00"){
                     let dataList = responseObj.data;
-                    let tableData = this.state.data;
+                    let tableData = [];
                     let dataObj;
+                    let j = responseObj.data.length
                     for (let i = 0;i<dataList.length;i++){
-                        dataObj = Object.assign({},dataList[i],{key:i})
+                        dataObj = Object.assign({},dataList[i],{key:i+1})
                         tableData.push(dataObj);
                     }
                     this.setState({
-                        data:tableData
-                    });
-
+                        data:tableData,
+                        totalPage:responseObj.totalPage,
+                        totalCount1:responseObj.totalCount
+                    },this.setState({
+                        data:[]
+                    }));
                 }
             }
         }.bind(this);
-        xmlhttp.open("GET","/main/searchBooks",false);
+        xmlhttp.open("POST","order/searchCheck",false);
         xmlhttp.setRequestHeader("Content-Type","application/json");
         xmlhttp.send(jsonString);
+
     }
     render(){
         const clientHeight = document.body.clientHeight;
+        const that=this;
         const formStyle = {
             width:"100%",
             marginLeft: "auto",
             marginRight: "auto",
         }
+        const page={
+            onChange: function(page,pageSize){
+                const jsonObj = {
+                    searchType: that.state.selectOption,
+                    searchStr: that.state.selectValue,
+                    pageNumber:page
+                };
+                const jsonString = JSON.stringify(jsonObj);
+                let xmlhttp;
+                xmlhttp=new XMLHttpRequest();
+                xmlhttp.onreadystatechange=function() {
+                    if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                        let responseObj = JSON.parse(xmlhttp.responseText);
+                        if (responseObj.code==="01") {
+                            message.warning("输入有误");
+                            return;
+                        }else if (responseObj.code==="00"){
+                            let dataList = responseObj.data;
+                            let tableData= [];
+                            let dataObj;
+                            for (let i = 0;i<dataList.length;i++){
+                                dataObj = Object.assign({},dataList[i],{key:i+1})
+                                tableData.push(dataObj);
+                            }
+                            that.setState({
+                                pageNumber:page,
+                                data:tableData,
+                                totalCount1:responseObj.totalCount,
+                            },that.setState({
+                                data:[]
+                            }));
+
+
+                        }
+                    }
+                }
+                xmlhttp.open("POST","order/searchCheck",false);
+                xmlhttp.setRequestHeader("Content-Type","application/json");
+                xmlhttp.send(jsonString);
+            },
+            total:that.state.totalCount1,
+            pageSize:8
+        }
         return(
 
-            <div className="shoppingContent" style={{height: clientHeight}}>
+            <div className="shoppingContent" >
                 <div className="shoppingLine">
                 <div className="shoppingCondition">
                     <label className="searchWay">检索途径：
                         <Select value={this.state.selectOption} style={{ width: 120 }} onChange={this.handleCheckSelectChange.bind(this)}>
-                            <Option value="title">标题</Option>
-                            <Option value="author">作者或责任人</Option>
-                            <Option value="callNumber">索书号</Option>
-                            <Option value="isbn">isbn</Option>
-                            <Option value="barCode">书的条形码</Option>
+                            <Option value="1">验收批号</Option>
+                            <Option value="2">作者或责任人</Option>
+                            <Option value="3">书编号</Option>
+                            <Option value="4">验收人</Option>
+                            <Option value="5">isbn号</Option>
+                            <Option value="6">标题</Option>
+                            <Option value="7">订购批号</Option>
                         </Select>
                     </label>
                 </div>
                 <div className="searchCondition">
+                    <span>验收查询：  </span>
                     <Search
                         type="text"
                         placeholder="请输入查询内容"
@@ -150,9 +222,9 @@ class HomePageCheck extends React.Component{
                 <div className="newCondition">
                     <Button type="newShopping" onClick={this.handleCheckClick.bind(this)}>验收</Button>
                 </div>
-                    </div>
+                </div>
                 <div className="tableCondition" style={formStyle}>
-                    <Table columns={columns} dataSource={data} pagination={{ pageSize: 50 }} />
+                    <Table columns={this.state.columns} dataSource={this.state.data}  pagination={page}/>
                 </div>
             </div>
         )

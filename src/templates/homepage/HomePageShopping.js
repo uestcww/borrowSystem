@@ -11,52 +11,6 @@ import "../../css/homepageShopping.css"
 const Option = Select.Option;
 const Search = Input.Search;
 
-const columns = [{
-    title: '书编号',
-    dataIndex: 'bookIndex',
-    //width: 150,
-}, {
-    title: '标题',
-    dataIndex: 'title',
-    //width: 150,
-}, {
-    title: '作者',
-    dataIndex: 'author',
-    //width:150,
-},{
-    title: 'isbn',
-    dataIndex: 'isbn',
-    //width: 150,
-},{
-    title: '出版社',
-    dataIndex: 'publisher',
-    width: 150,
-},{
-    title: '订单批号',
-    dataIndex: 'batchNumber',
-    //width: 150,
-},{
-    title: '订书总价格',
-    dataIndex: 'totalPrice',
-    //width: 150,
-},{
-    title: '订购人',
-    dataIndex: 'orderPerson',
-    //width: 150,
-},{
-    title: '订购数量',
-    dataIndex: 'orderCount',
-    //width: 150,
-},{
-    title: '书的价格',
-    dataIndex: 'price',
-    //width: 150,
-},{
-    title: '订购书来源',
-    dataIndex: 'bookSource',
-    //width: 150,
-}];
-const data = [];
 
 class HomePageShopping extends React.Component{
     constructor(props){
@@ -64,8 +18,61 @@ class HomePageShopping extends React.Component{
         this.state={
             selectValue: "",
             selectOption: "1",
+            pageNumber:1,
+            totalCount:0,
+            data:[],
+            columns : [
+                {
+                    title:"序号",
+                    dataIndex:"key"
+                },
+                {
+                    title: '书编号',
+                    dataIndex: 'bookIndex',
+                    //width: 150,
+                }, {
+                    title: '标题',
+                    dataIndex: 'title',
+                    //width: 150,
+                }, {
+                    title: '作者',
+                    dataIndex: 'author',
+                    //width:150,
+                },{
+                    title: 'isbn',
+                    dataIndex: 'isbn',
+                    //width: 150,
+                },{
+                    title: '出版社',
+                    dataIndex: 'publisher',
+                },{
+                    title: '订单批号',
+                    dataIndex: 'batchNumber',
+                    //width: 150,
+                },{
+                    title: '订书总价格',
+                    dataIndex: 'totalPrice',
+                    //width: 150,
+                },{
+                    title: '订购人',
+                    dataIndex: 'orderPerson',
+                    //width: 150,
+                },{
+                    title: '订购数量',
+                    dataIndex: 'orderCount',
+                    //width: 150,
+                },{
+                    title: '书的价格',
+                    dataIndex: 'price',
+                    //width: 150,
+                },{
+                    title: '订购书来源',
+                    dataIndex: 'bookSource',
+                    //width: 150,
+                }]
         }
     }
+
 handleShoppingSearchChange(e){
         this.setState({
             selectValue:e.target.value
@@ -84,8 +91,9 @@ hashHistory.push({
 }
 handleEnterClick(e){
     const jsonObj = {
-        searchType: this.state.selectValue,
-        searchStr: this.state.selectOption,
+        searchType: this.state.selectOption,
+        searchStr: this.state.selectValue,
+        pageNumber:this.state.pageNumber,
     };
     const jsonString = JSON.stringify(jsonObj);
     let xmlhttp;
@@ -98,30 +106,80 @@ handleEnterClick(e){
                 return;
             }else if (responseObj.code==="00"){
                 let dataList = responseObj.data;
-                let tableData = this.state.data;
+                let j = dataList.length;
+                let tableData = [];
                 let dataObj;
                 for (let i = 0;i<dataList.length;i++){
-                    dataObj = Object.assign({},dataList[i],{key:i})
+                    dataObj = Object.assign({},dataList[i],{key:i+1})
                     tableData.push(dataObj);
                 }
                 this.setState({
-                    data:tableData
-                });
+                    data:tableData,
+                    totalCount:responseObj.totalCount
+                },this.setState({
+                    data:[]
+                }));
 
             }
         }
     }.bind(this);
-    xmlhttp.open("POST","/main/searchBooks",false);
+
+    xmlhttp.open("POST","order/searchOrder",false);
     xmlhttp.setRequestHeader("Content-Type","application/json");
     xmlhttp.send(jsonString);
+
 }
 
 render(){
     const clientHeight = document.body.clientHeight;
+    const that = this;
     const formStyle = {
         width:"100%",
         marginLeft: "auto",
         marginRight: "auto",
+    }
+    const page={
+        onChange: function(page,pageSize){
+            const jsonObj = {
+                searchType: that.state.selectOption,
+                searchStr: that.state.selectValue,
+                pageNumber:page
+            };
+            const jsonString = JSON.stringify(jsonObj);
+            let xmlhttp;
+            xmlhttp=new XMLHttpRequest();
+            xmlhttp.onreadystatechange=function() {
+                if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                    let responseObj = JSON.parse(xmlhttp.responseText);
+                    if (responseObj.code==="01") {
+                        message.warning("输入有误");
+                        return;
+                    }else if (responseObj.code==="00"){
+                        let dataList = responseObj.data;
+                        let tableData= [];
+                        let dataObj;
+                        for (let i = 0;i<dataList.length;i++){
+                            dataObj = Object.assign({},dataList[i],{key:i+1})
+                            tableData.push(dataObj);
+                        }
+                        that.setState({
+                            pageNumber:page,
+                            data:tableData,
+                            totalCount:responseObj.totalCount
+                        },that.setState({
+                            data:[]
+                        }));
+
+
+                    }
+                }
+            }
+            xmlhttp.open("POST","order/searchOrder",false);
+            xmlhttp.setRequestHeader("Content-Type","application/json");
+            xmlhttp.send(jsonString);
+        },
+        total:that.state.totalCount,
+        pageSize:8
     }
         return(
 
@@ -141,6 +199,7 @@ render(){
             </label>
         </div>
             <div className="searchCondition">
+                <span>采购查询：  </span>
                 <Search
                     type="text"
                     placeholder="请输入查询内容"
@@ -150,14 +209,13 @@ render(){
                     enterButton
                     onChange={this.handleShoppingSearchChange.bind(this)}
                 />
-                {/*<br /><br />*/}
             </div>
             <div className="newCondition">
                 <Button type="newShopping" onClick={this.handleShoppingClick.bind(this)}>新订购</Button>
             </div>
             </div>
             <div className="tableCondition" style={formStyle}>
-                <Table columns={columns} dataSource={data} pagination={{ pageSize: 50 }} />
+                <Table columns={this.state.columns} dataSource={this.state.data}  pagination={page} />
             </div>
         </div>
         )
