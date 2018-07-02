@@ -1,6 +1,6 @@
 import React from 'react';
 import { hashHistory, Link } from "react-router";
-import { Menu, Icon, Dropdown, Modal, Button } from 'antd';
+import { Menu, Icon, Dropdown, Modal, message, Button, Row, Col, Input } from 'antd';
 import Footer from "./Footer";
 import "../../css/homepage.css";
 
@@ -11,38 +11,187 @@ class HomePage extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            username: "我的名字长度达到了十三个字",
+            username: "",
             currentMenu: "homePage",
             passwordModifyModalVisible: false,
+            oldPassword: "",
+            newPassword: "",
+            newPasswordAgain: "",
+            oldPasswordAlert: <br/>,
+            newPasswordAlert: <br/>,
+            newPasswordAgainAlert: <br/>,
         }
     }
 
     componentWillMount(){
-        // this.setState({
-        //     username: sessionStorage.getItem("username")
-        // });
+        // let isLogin = localStorage.getItem("isLogin");
+        // if(isLogin){
+        //     this.setState({
+        //         username: localStorage.getItem("username"),
+        //         currentMenu: localStorage.getItem("currentMenu"),
+        //     })
+        // }else{
+        //     message.warning("您没有登录！");
+        //     setInterval(() => {
+        //         hashHistory.push({
+        //             pathname: "/",
+        //         });
+        //     },2000)
+        // }
     }
 
-    handleClick(e) {
+    handleClick(e){
         this.setState({
             currentMenu: e.key,
         });
+        localStorage.setItem("currentMenu",e.key);
     }
 
-    handleLogout(){
-        hashHistory.push({
-            pathname: "/"
-        });
-    }
-
-    setPasswordModifyModalVisible(isVisible) {
+    setPasswordModifyModalVisible(value){
         this.setState({
-            passwordModifyModalVisible: isVisible,
+            passwordModifyModalVisible: value,
+            oldPassword: "",
+            newPassword: "",
+            newPasswordAgain: "",
+            oldPasswordAlert: <br/>,
+            newPasswordAlert: <br/>,
+            newPasswordAgainAlert: <br/>,
         });
+    }
+
+    handlePasswordModifyOldChange(e){
+        this.setState({
+            oldPassword: e.target.value,
+        });
+    }
+
+    handlePasswordModifyNewChange(e){
+        this.setState({
+            newPassword: e.target.value,
+        });
+    }
+
+    handlePasswordModifyNewAgainChange(e){
+        this.setState({
+            newPasswordAgain: e.target.value,
+        });
+    }
+
+    handlePasswordModifyOldBlur(e){
+        if(e.target.value === ""){
+            this.setState({
+                oldPasswordAlert: <Row>
+                    <Col span={5}></Col>
+                    <Col span={19}><span style={{color: "red",fontSize: 10}}>请填写旧密码</span></Col>
+                </Row>
+            })
+        }else{
+            this.setState({
+                oldPasswordAlert: <br/>
+            })
+        }
+    }
+
+    handlePasswordModifyNewBlur(e){
+        if(e.target.value === ""){
+            this.setState({
+                newPasswordAlert: <Row>
+                    <Col span={5}></Col>
+                    <Col span={19}><span style={{color: "red",fontSize: 10}}>请填写新密码</span></Col>
+                </Row>
+            })
+        }else if(this.state.newPassword !== this.state.newPasswordAgain){
+            this.setState({
+                newPasswordAlert: <Row>
+                    <Col span={5}></Col>
+                    <Col span={19}><span style={{color: "red",fontSize: 10}}>新旧密码不一致</span></Col>
+                </Row>
+            })
+        }else{
+            this.setState({
+                newPasswordAlert: <br/>
+            })
+        }
+    }
+
+    handlePasswordModifyNewAgainBlur(e){
+        if(e.target.value === ""){
+            this.setState({
+                newPasswordAgainAlert: <Row>
+                    <Col span={5}></Col>
+                    <Col span={19}><span style={{color: "red",fontSize: 10}}>请重新填写新密码</span></Col>
+                </Row>
+            })
+        }else if(this.state.newPassword !== this.state.newPasswordAgain){
+            this.setState({
+                newPasswordAgainAlert: <Row>
+                    <Col span={5}></Col>
+                    <Col span={19}><span style={{color: "red",fontSize: 10}}>新旧密码不一致</span></Col>
+                </Row>
+            })
+        }else{
+            this.setState({
+                newPasswordAgainAlert: <br/>
+            })
+        }
     }
 
     handlePasswordModify(){
+        const State = this.state;
+        if(State.oldPassword === ""||State.newPassword === ""||State.newPasswordAgain === ""){
+            return;
+        }else if(State.newPassword!==State.newPasswordAgain){
+            return;
+        }else{
+            let jsonObj = {
+                username: this.state.username,
+                oldPassword: this.state.oldPassword,
+                newPassword: this.state.newPassword,
+            };
+            let jsonString = JSON.stringify(jsonObj);
+            let xmlhttp;
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                    let responseObj = JSON.parse(xmlhttp.responseText);
+                    if(responseObj.errcode === "000"){
+                        message.success("修改成功！请重新登录！");
+                        localStorage.clear();
+                        hashHistory.push({
+                            pathname: "/"
+                        })
+                    }else{
+                        message.warning(responseObj.errcontent);
+                    }
+                }
+            }.bind(this);
+            xmlhttp.open("POST","/user/changepassword",true);
+            xmlhttp.setRequestHeader("Content-Type","application/json");
+            xmlhttp.send(jsonString);
+        }
+    }
 
+    handleLogout(){
+        let xmlhttp;
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function(){
+            if(xmlhttp.readyState === 4&&xmlhttp.status === 200){
+                let responseObj = JSON.parse(xmlhttp.responseText);
+                if(responseObj.errcode === "000"){
+                    message.success("登出成功！");
+                    localStorage.clear();
+                    hashHistory.push({
+                        pathname: "/"
+                    })
+                }else{
+                    message.warning("操作失败！");
+                    message.warning(responseObj.errcontent);
+                }
+            }
+        }.bind(this);
+        xmlhttp.open("GET","/user/logout",true);
+        xmlhttp.setRequestHeader("Content-Type","application/json");
+        xmlhttp.send();
     }
 
     handleUserMenu(e){
@@ -65,7 +214,6 @@ class HomePage extends React.Component{
             </Menu>
         );
         const clientHeight = document.body.clientHeight;
-        let backgroundImg = require("../../img/background.png");
         return(
             <div className="homepageDiv" style={{height: clientHeight,}}>
                 <div style={{marginTop: 10}}>
@@ -80,12 +228,44 @@ class HomePage extends React.Component{
                     title="修改密码"
                     style={{ top: 50 }}
                     visible={this.state.passwordModifyModalVisible}
-                    onOk={() => this.setModal1Visible(false)}
+                    onOk={this.handlePasswordModify.bind(this)}
                     onCancel={() => this.setPasswordModifyModalVisible(false)}
+                    okText="确认修改"
+                    cancelText="取消"
                 >
-                    <p>对话框的内容</p>
-                    <p>对话框的内容</p>
-                    <p>对话框的内容</p>
+                    <Row>
+                        <Col span={5}>旧密码：</Col>
+                        <Col span={19}>
+                            <Input type="password"
+                                   value={this.state.oldPassword}
+                                   onChange={this.handlePasswordModifyOldChange.bind(this)}
+                                   onBlur={this.handlePasswordModifyOldBlur.bind(this)}
+                            />
+                        </Col>
+                    </Row>
+                    {this.state.oldPasswordAlert}
+                    <Row>
+                        <Col span={5}>新密码：</Col>
+                        <Col span={19}>
+                            <Input type="password"
+                                   value={this.state.newPassword}
+                                   onChange={this.handlePasswordModifyNewChange.bind(this)}
+                                   onBlur={this.handlePasswordModifyNewBlur.bind(this)}
+                            />
+                        </Col>
+                    </Row>
+                    {this.state.newPasswordAlert}
+                    <Row>
+                        <Col span={5}>确认新密码：</Col>
+                        <Col span={19}>
+                            <Input type="password"
+                                   value={this.state.newPasswordAgain}
+                                   onChange={this.handlePasswordModifyNewAgainChange.bind(this)}
+                                   onBlur={this.handlePasswordModifyNewAgainBlur.bind(this)}
+                            />
+                        </Col>
+                    </Row>
+                    {this.state.newPasswordAgainAlert}
                 </Modal>
                 <div>
                     <Menu onClick={this.handleClick.bind(this)}
@@ -112,12 +292,12 @@ class HomePage extends React.Component{
                             </SubMenu>
                             <Menu.Item key="bookSearch"><Link to="/homePage/BookManage">书刊管理</Link></Menu.Item>
                             <Menu.Item key="userSearch"><Link to="/homePage/ReaderManage">读者管理</Link></Menu.Item>
-                            <Menu.Item key="userBookCount"><Link to="/homePage/userManageCount">读者管理统计</Link></Menu.Item>
+
+                            <Menu.Item key="loaningCount"><Link to="/homePage/borrowRankCount">借阅名次统计</Link></Menu.Item>
                             <Menu.Item key="borrowOrderCount"><Link to="/homePage/borrowCount">外借统计</Link></Menu.Item>
-                            <Menu.Item key="loaningCount"><Link to="/homePage/Search">借阅名次统计</Link></Menu.Item>
-                            <Menu.Item key="moneyCount"><Link to="/homePage/Search">押金/罚金统计</Link></Menu.Item>
-                            <Menu.Item key="circulationCount"><Link to="/homePage/Search">流通统计</Link></Menu.Item>
-                            <Menu.Item key="circulationLogCount"><Link to="/homePage/Search">流通日志统计</Link></Menu.Item>
+                            <Menu.Item key="moneyCount"><Link to="/homePage/depositFineCount">押金/罚金统计</Link></Menu.Item>
+                            <Menu.Item key="userBookCount"><Link to="/homePage/userManageCount">读者管理统计</Link></Menu.Item>
+                            <Menu.Item key="circulationLogCount"><Link to="/homePage/circulationLogCount">流通日志统计</Link></Menu.Item>
                         </SubMenu>
                         <Menu.Item key="userManage">
                             <Link to="/homePage/userManage"><Icon type="team" />用户管理</Link>

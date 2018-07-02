@@ -1,5 +1,7 @@
 import React from 'react';
-import { Table, Input, Button, Row, Col, message } from "antd";
+import { Table, Input, Button, Row, Col, message, Modal } from "antd";
+
+const confirm = Modal.confirm;
 
 class bookLost extends React.Component{
     constructor(props){
@@ -9,40 +11,7 @@ class bookLost extends React.Component{
             readerName: "",
             readerGender: "",
             readerStatus: "",
-            data: [
-                {
-                    key: "0",
-                    readerBarcode: "1a",
-                    bookBarcode: "1b",
-                    bookName: "1c",
-                    borrowDate: "1d",
-                    endDate: "1e",
-                },
-                {
-                    key: "1",
-                    readerBarcode: "2A",
-                    bookBarcode: "2B",
-                    bookName: "2C",
-                    borrowDate: "2D",
-                    endDate: "2E",
-                },
-                {
-                    key: "2",
-                    readerBarcode: "3a",
-                    bookBarcode: "3b",
-                    bookName: "3c",
-                    borrowDate: "3d",
-                    endDate: "3e",
-                },
-                {
-                    key: "3",
-                    readerBarcode: "4A",
-                    bookBarcode: "4B",
-                    bookName: "4C",
-                    borrowDate: "4D",
-                    endDate: "4E",
-                }
-            ],
+            data: [],
             columns: [
                 {
                     title: '读者条形码',
@@ -58,7 +27,7 @@ class bookLost extends React.Component{
                 },
                 {
                     title: '借阅时间',
-                    dataIndex: 'borrowDate',
+                    dataIndex: 'startDate',
                 },
                 {
                     title: '截止日期',
@@ -138,43 +107,23 @@ class bookLost extends React.Component{
                     let data = responseObj.data;
                     let bookData = [];
                     for(let i=0;i<data.length;i++){
+                        let startTime = new Date(data[i].borrowTime);
                         let endTime = new Date(data[i].returnTime);
-                        /*
-
-
-                        function timestampToTime(timestamp) {
-                            var date = new Date(timestamp * 1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
-                            Y = date.getFullYear() + '-';
-                            M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
-                            D = date.getDate() + ' ';
-                            h = date.getHours() + ':';
-                            m = date.getMinutes() + ':';
-                            s = date.getSeconds();
-                            return Y+M+D+h+m+s;
-                        }
-                        timestampToTime(1403058804);
-                        console.log(timestampToTime(1403058804));//2014-06-18 10:33:24
-
-                        * */
-                        /*
-                        * 1.加一个字段，就是借书时间
-                        * 2.时间戳一共几位，是不是固定长的
-                        *
-                        *
-                        * */
                         let bookObj = {
                             key: i,
                             readerBarcode: data[i].borrowPersonID,
                             bookBarcode: data[i].bookBarcode,
                             bookName: data[i].title,
-                            borrowDate: data[i].borrowDate,
-                            endDate: data[i].returnTime,
+                            startDate: `${startTime.getFullYear()}-${startTime.getMonth()+1}-${startTime.getDate()}`,
+                            endDate: `${endTime.getFullYear()}-${endTime.getMonth()+1}-${endTime.getDate()}`,
                         };
                         bookData.push(bookObj);
                     }
                     this.setState({
+                        data: []
+                    },this.setState({
                         data: bookData,
-                    })
+                    }))
                 }else{
                     if(responseObj.errcode=="002"||responseObj.errcode=="004"){
                         message.warning("未登录或用户不存在！");
@@ -192,9 +141,38 @@ class bookLost extends React.Component{
     }
 
     confirmLost(text,record,index){
-        console.log(text);
-        console.log(record);
-        console.log(index);
+        confirm({
+            title: '确定丢失？',
+            content: '',
+            onOk(){
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        let jsonObj = {
+                            borrowPersonId: record.readerBarcode,
+                            bookBarCode: record.bookBarcode
+                        };
+                        let jsonString = JSON.stringify(jsonObj);
+                        let xmlhttp;
+                        xmlhttp = new XMLHttpRequest();
+                        xmlhttp.onreadystatechange = function(){
+                            if(xmlhttp.readyState === 4&&xmlhttp.status === 200){
+                                let responseObj = JSON.parse(xmlhttp.responseText);
+                                if(responseObj.code === "00"){
+                                    message.success("操作成功！");
+                                    this.handleButtonClick();
+                                }else{
+                                    message.warning(responseObj.msg);
+                                }
+                            }
+                        }.bind(this);
+                        xmlhttp.open("POST","/main/lostBooks",true);
+                        xmlhttp.setRequestHeader("Content-Type","application/json");
+                        xmlhttp.send(jsonString);
+                    }, 600);
+                }).catch(() => console.log('Oops errors!'));
+            },
+            onCancel() {},
+        });
     }
 
     render(){

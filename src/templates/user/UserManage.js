@@ -108,12 +108,11 @@ class UserManage extends React.Component{
                     message.error("您没有权限访问！");
                     return;
                 }else if(responseObj.errcode === "000"){
-                    responseObj.data[0].title
                     let dataList = responseObj.userlist;
                     let tableData = this.state.data;
                     let dataObj;
                     for(let i=0;i<dataList.length;i++){
-                        dataObj = Object.assign({},dataList[i],{key:i})
+                        dataObj = Object.assign({},dataList[i],{key:i,roleId:dataList[i].usergroup});
                         tableData.push(dataObj);
                     }
                     this.setState({
@@ -122,8 +121,8 @@ class UserManage extends React.Component{
                 }
             }
         }.bind(this);
-        xmlhttp.open("GET", "/user/getalluser", false);
-        xmlhttp.setRequestHeader("Content-Type", "application/json");
+        xmlhttp.open("GET","/user/getalluser",true);
+        xmlhttp.setRequestHeader("Content-Type","application/json");
         xmlhttp.send();
     }
 
@@ -157,7 +156,7 @@ class UserManage extends React.Component{
             username: currentUser.username,
             password: currentUser.password,
             roleId: currentUser.roleId,
-        }
+        };
         let jsonString = JSON.stringify(jsonObj);
         let xmlhttp;
         xmlhttp = new XMLHttpRequest();
@@ -309,7 +308,7 @@ class UserManage extends React.Component{
             username: newUser.username,
             password: newUser.password,
             roleId: newUser.roleId,
-        }
+        };
         let jsonString = JSON.stringify(jsonObj);
         let xmlhttp;
         xmlhttp = new XMLHttpRequest();

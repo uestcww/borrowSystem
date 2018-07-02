@@ -1,133 +1,97 @@
 import React from 'react';
-import { Table, Input, Button, Row, Col, Modal } from "antd";
-import {message} from "antd/lib/index";
+import { Input, Row, Col, Radio, Button, message, Modal } from 'antd';
+import Barcode from "react-barcode";
+
+import "../../../css/circulation/ciasher/CiasherBorrow.css";
+
+const RadioGroup = Radio.Group;
+const confirm = Modal.confirm;
 
 class FinesManage extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            readerBarcode: "",
-            readerName: "",
-            readerGender: "",
-            readerStatus: "",
-            data: [
-                {
-                    key: "0",
-                    readerBarcode: "007",
-                    bookBarcode: "008",
-                    bookName: "母猪的产后护理",
-                    borrowDate: "2018-01-01",
-                    endDate: "3018-01-01",
-                },
-                {
-                    key: "1",
-                    readerBarcode: "007",
-                    bookBarcode: "008",
-                    bookName: "母猪的产后护理",
-                    borrowDate: "2018-01-01",
-                    endDate: "3018-01-01",
-                },
-                {
-                    key: "2",
-                    readerBarcode: "007",
-                    bookBarcode: "008",
-                    bookName: "母猪的产后护理",
-                    borrowDate: "2018-01-01",
-                    endDate: "3018-01-01",
-                },
-                {
-                    key: "3",
-                    readerBarcode: "007",
-                    bookBarcode: "008",
-                    bookName: "母猪的产后护理",
-                    borrowDate: "2018-01-01",
-                    endDate: "3018-01-01",
-                },
-                {
-                    key: "4",
-                    readerBarcode: "007",
-                    bookBarcode: "008",
-                    bookName: "母猪的产后护理",
-                    borrowDate: "2018-01-01",
-                    endDate: "3018-01-01",
-                },
-                {
-                    key: "5",
-                    readerBarcode: "007",
-                    bookBarcode: "008",
-                    bookName: "母猪的产后护理",
-                    borrowDate: "2018-01-01",
-                    endDate: "3018-01-01",
-                },
-            ],
-            columns: [
-                {
-                    title: '读者条形码',
-                    dataIndex: 'readerBarcode',
-                },
-                {
-                    title: '书籍条形码',
-                    dataIndex: 'bookBarcode',
-                },
-                {
-                    title: '书籍名称',
-                    dataIndex: 'bookName',
-                },
-                {
-                    title: '借阅时间',
-                    dataIndex: 'borrowDate',
-                },
-                {
-                    title: '截止日期',
-                    dataIndex: 'endDate',
-                },
-                {
-                    title: '操作',
-                    key: 'action',
-                    render: (text, record) => (
-                        <span><a href="javascript:;">确认丢失</a></span>
-                    ),
-                }
-            ],
+            optionRadio: 0,
+            readerbarcode: "",
+            bookInfoDisabled: false,
+            bookbarcode: "",
+            modalVisible: false,
+            confirmLoading: false,
+            readerInfo: {
+                readerbarcode: "12345678",
+                name: "weiwei",
+                gender: "nan",
+                isRevoke: "yes",
+                isLost: "no",
+                borrowcount: 360,
+                file: "/src/img/test.jpg",
+                canBorrow: true,
+            },
+            bookInfo: {
+                title: "母猪的产后护理",
+                author: "李言荣",
+                isbn: "007",
+                publisher: "电子科技大学",
+                callNumber: "5568522",
+                pages: 366,
+            },
         };
     }
 
-    handleInputChange(e){
+    handleOptionValueChange(e){
         this.setState({
-            readerBarcode: e.target.value,
-        })
+            optionRadio: e.target.value,
+        });
     }
 
-    handleButtonClick(){
-        let url = "/library/reader/getreaderbyid?readerbarcode="+this.state.readerBarcode;
+    handleReaderInputChange(e){
+        this.setState({
+            readerbarcode: e.target.value,
+        });
+    }
+
+    handleReaderClick(){
+        if(this.state.readerbarcode === ""){
+            message.warning("请输入读者条形码！");
+            return;
+        }
+        let jsonObj = {
+            readerbarcode: this.state.readerbarcode,
+        };
+        let jsonString = JSON.stringify(jsonObj);
         let xmlhttp;
         xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function(){
-            if(xmlhttp.readyState === 4&&xmlhttp.status === 200){
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
                 let responseObj = JSON.parse(xmlhttp.responseText);
-                if(responseObj.code === "000"){
-                    let status = "正常";
-                    if(responseObj.isLost&&responseObj.isRevoke === 2){
-                        status = "即将注销且已挂失";
-                    }else if(responseObj.isLost){
-                        status = "已挂失";
-                    }else if(responseObj.isRevoke === 2){
-                        status = "即将注销";
+                if(responseObj.errcode === "000"){
+                    let isrevoke="";
+                    let borrowable = false;
+                    if(!responseObj.isRevoke){
+                        isrevoke = "正常";
+                        borrowable = true;
+                    }else if(responseObj.isRevoke==1){
+                        isrevoke = "已注销/过期";
+                    }else if(responseObj.isRevoke==2){
+                        isrevoke = "距离过期小于一个月";
                     }
-                    if(responseObj.isRevoke === 1){
-                        status = "已注销";
+                    if(!responseObj.isLost){
+                        borrowable=true;
                     }
-                    this.setState({
-                        readerName: responseObj.name,
-                        readerGender: responseObj.gender,
-                        readerStatus: status,
-                    });
-                    this.getReaderBook();
+                    let readerObj = {
+                        readerbarcode: responseObj.readerbarcode,
+                        name: responseObj.name,
+                        gender: responseObj.gender,
+                        isRevoke: isrevoke,
+                        isLost: responseObj.isLost?"是":"否",
+                        borrowcount: responseObj.borrowcount,
+                        file: responseObj.file,
+                        canBorrow: borrowable,
+                    };
                 }else{
                     this.setState({
-                        readerName: "",
-                        readerGender: "",
-                        readerStatus: "",
+                        bookInfoDisabled: true,
+                        readerInfo: {},
                     });
                     if(responseObj.errcode=="002"||responseObj.errcode=="004"){
                         message.warning("未登录或用户不存在！");
@@ -139,107 +103,226 @@ class FinesManage extends React.Component{
                 }
             }
         }.bind(this);
-        xmlhttp.open("GET",url,true);
+        xmlhttp.open("POST","/library/reader/getreaderbyid",true);
         xmlhttp.setRequestHeader("Content-Type","application/json");
-        xmlhttp.send();
+        xmlhttp.send(jsonString);
     }
 
-    getReaderBook(){
-        let url = "/library/reader/getreadernowrented?readerbarcode="+this.state.readerBarcode;
+    handleBookInputChange(e){
+        this.setState({
+            bookbarcode: e.target.value,
+        });
+    }
+
+    handleBookClick(){
+        this.setState({
+            modalVisible: true,
+        });
+        if(!this.state.readerInfo.canBorrow){
+            message.warning("该读者已挂失或即将注销或者已注销，无法借书！");
+            return;
+        }
+        if(this.state.bookbarcode === ""){
+            message.warning("请输入书籍条形码！");
+            return;
+        }
+        let jsonObj = {
+            searchType: 5,
+            searchStr: this.state.bookbarcode,
+        };
+        let jsonString = JSON.stringify(jsonObj);
         let xmlhttp;
         xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function(){
-            if(xmlhttp.readyState === 4&&xmlhttp.status === 200){
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
                 let responseObj = JSON.parse(xmlhttp.responseText);
-                if(responseObj.code === "000"){
-                    let data = responseObj.data;
-                    let bookData = [];
-                    for(let i=0;i<data.length;i++){
-                        let endTime = new Date(data[i].returnTime);
-                        /*
-
-
-                        function timestampToTime(timestamp) {
-                            var date = new Date(timestamp * 1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
-                            Y = date.getFullYear() + '-';
-                            M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
-                            D = date.getDate() + ' ';
-                            h = date.getHours() + ':';
-                            m = date.getMinutes() + ':';
-                            s = date.getSeconds();
-                            return Y+M+D+h+m+s;
-                        }
-                        timestampToTime(1403058804);
-                        console.log(timestampToTime(1403058804));//2014-06-18 10:33:24
-
-                        * */
-                        /*
-                        * 1.加一个字段，就是借书时间
-                        * 2.时间戳一共几位，是不是固定长的
-                        *
-                        *
-                        * */
-                        let bookObj = {
-                            key: i,
-                            readerBarcode: data[i].borrowPersonID,
-                            bookBarcode: data[i].bookBarcode,
-                            bookName: data[i].title,
-                            borrowDate: data[i].borrowDate,
-                            endDate: data[i].returnTime,
-                        };
-                        bookData.push(bookObj);
-                    }
+                if(responseObj.code === "00"){
+                    let bookObj = {
+                        title: responseObj.data[0].title,
+                        author: responseObj.data[0].author,
+                        isbn: responseObj.data[0].isbn,
+                        publisher: responseObj.data[0].publisher,
+                        callNumber: responseObj.data[0].callNumber,
+                        pages: responseObj.data[0].pages,
+                    };
                     this.setState({
-                        data: bookData,
+                        bookInfo: bookObj,
+                        modalVisible: true,
                     })
-                }else{
-                    if(responseObj.errcode=="002"||responseObj.errcode=="004"){
-                        message.warning("未登录或用户不存在！");
-                    }else if(responseObj.errcode=="003"){
-                        message.warning("您没有这个权限！");
-                    }else if(responseObj.errcode=="500"){
-                        message.error("未知错误！");
-                    }
+                }else if(responseObj.code === "01"){
+                    message.warning("操作失败，请重试！");
+                    this.State({
+                        bookInfo: {},
+                        modalVisible: false,
+                    })
                 }
             }
         }.bind(this);
-        xmlhttp.open("GET",url,true);
+        xmlhttp.open("POST","/main/searchBooks",true);
         xmlhttp.setRequestHeader("Content-Type","application/json");
-        xmlhttp.send();
+        xmlhttp.send(jsonString);
+    }
+
+    handleModalOk(){
+        this.setState({
+            confirmLoading: true,
+        });
+        setTimeout(() => {
+            let url="";
+            if(this.state.optionRadio){
+                url = "/main/renewBooks";
+            }else{
+                url = "/main/borrowBooks";
+            }
+            let jsonObj = {
+                borrowPersonId: this.state.readerbarcode,
+                bookBarCode: this.state.bookbarcode,
+            };
+            let jsonString = JSON.stringify(jsonObj);
+            let xmlhttp;
+            xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                    let responseObj = JSON.parse(xmlhttp.responseText);
+                    if(responseObj.code === "00"){
+                        message.success("借书成功！");
+                        this.setState({
+                            modalVisible: false,
+                            bookInfo: {},
+                            bookbarcode: "",
+                        })
+                    }else{
+                        message.warning(responseObj.msg);
+                    }
+                }
+            }.bind(this);
+            xmlhttp.open("POST",url,true);
+            xmlhttp.setRequestHeader("Content-Type","application/json");
+            xmlhttp.send(jsonString);
+        }, 600);
+    }
+
+    handleModalCancel() {
+        this.setState({
+            modalVisible: false,
+            bookInfo: {},
+        });
     }
 
     render(){
         return(
-            <div>
-                <div style={{marginTop: 20}}>
+            <div className="borrowBodyDiv">
+                <Modal title={this.state.optionRadio?"确定续借这本书吗？":"确定要借这本书吗？"}
+                       visible={this.state.modalVisible}
+                       onOk={this.handleModalOk.bind(this)}
+                       confirmLoading={this.state.confirmLoading}
+                       onCancel={this.handleModalCancel.bind(this)}
+                       okText="确定"
+                       cancelText="取消"
+                >
+                    <div style={{fontSize: 18}}>
+                        <Row>
+                            <Col span={5}>标题：</Col>
+                            <Col span={19}>《{this.state.bookInfo.title}》</Col>
+                        </Row>
+                        <Row>
+                            <Col span={5}>作者：</Col>
+                            <Col span={19}>{this.state.bookInfo.author}</Col>
+                        </Row>
+                        <Row>
+                            <Col span={5}>ISBN：</Col>
+                            <Col span={19}>{this.state.bookInfo.isbn}</Col>
+                        </Row>
+                        <Row>
+                            <Col span={5}>出版社：</Col>
+                            <Col span={19}>{this.state.bookInfo.publisher}</Col>
+                        </Row>
+                        <Row>
+                            <Col span={5}>索书号：</Col>
+                            <Col span={19}>{this.state.bookInfo.callNumber}</Col>
+                        </Row>
+                        <Row>
+                            <Col span={5}>页数：</Col>
+                            <Col span={19}>{this.state.bookInfo.pages}</Col>
+                        </Row>
+                    </div>
+                </Modal>
+                <div className="borrowQueryDiv">
                     <Row>
-                        <Col span={4}></Col>
-                        <Col span={4}>
+                        <Col span={2}>外借/续借：</Col>
+                        <Col span={2}>
+                            <RadioGroup onChange={this.handleOptionValueChange.bind(this)} value={this.state.optionRadio}>
+                                <Radio value={0}>外借</Radio>
+                                <Radio value={1}>续借</Radio>
+                            </RadioGroup>
+                        </Col>
+                        <Col span={2}></Col>
+                        <Col span={2}>读者条形码：</Col>
+                        <Col span={2}>
                             <Input type="text"
-                                   placeholder="请输入读者条码"
-                                   value={this.state.readerBarcode}
-                                   onChange={this.handleInputChange.bind(this)}
+                                   value={this.state.readerbarcode}
+                                   onChange={this.handleReaderInputChange.bind(this)}
+                            />
+                        </Col>
+                        <Col span={1}></Col>
+                        <Col span={2}>
+                            <Button type="primary" onClick={this.handleReaderClick.bind(this)}>确定</Button>
+                        </Col>
+                        <Col span={2}></Col>
+                        <Col span={2}>书籍条形码：</Col>
+                        <Col span={2}>
+                            <Input type="text"
+                                   disabled={this.state.bookInfoDisabled}
+                                   value={this.state.bookbarcode}
+                                   onChange={this.handleBookInputChange.bind(this)}
                             />
                         </Col>
                         <Col span={1}></Col>
                         <Col span={2}>
                             <Button type="primary"
-                                    onClick={this.handleButtonClick.bind(this)}
+                                    disabled={this.state.bookInfoDisabled}
+                                    onClick={this.handleBookClick.bind(this)}
                             >确定</Button>
                         </Col>
-                        <Col span={3}>读者姓名：{this.state.readerName}</Col>
-                        <Col span={2}>性别：{this.state.readerGender}</Col>
-                        <Col span={4}>账户状态：{this.state.readerStatus}</Col>
-                        <Col span={4}></Col>
                     </Row>
                 </div>
-                <div style={{margin: 20,}}>
-                    <Table columns={this.state.columns}
-                           dataSource={this.state.data}
-                    />
+                <div className="borrowInfoDiv">
+                    <div className="borrowInfoImgDiv">
+                        <img src={this.state.readerInfo.file} height={350} width={250}/>
+                    </div>
+                    <div className="borrowInfoTextDiv">
+                        <Row>
+                            <Col span={10}>读者姓名：</Col>
+                            <Col span={12}>{this.state.readerInfo.name}</Col>
+                        </Row>
+                        <br/>
+                        <Row>
+                            <Col span={10}>读者性别：</Col>
+                            <Col span={12}>{this.state.readerInfo.gender}</Col>
+                        </Row>
+                        <br/>
+                        <Row>
+                            <Col span={10}>账号状态：</Col>
+                            <Col span={12}>{this.state.readerInfo.isRevoke}</Col>
+                        </Row>
+                        <br/>
+                        <Row>
+                            <Col span={10}>是否挂失：</Col>
+                            <Col span={12}>{this.state.readerInfo.isLost}</Col>
+                        </Row>
+                        <br/>
+                        <Row>
+                            <Col span={10}>已借图书数目：</Col>
+                            <Col span={12}>{this.state.readerInfo.borrowcount}</Col>
+                        </Row>
+                    </div>
+                    <div className="borrowInfoBarcode">
+                        <Barcode value={this.state.readerInfo.readerbarcode} />
+                    </div>
                 </div>
             </div>
         )
     }
 }
 export default FinesManage;
+
