@@ -1,7 +1,8 @@
 import React from "react";
-import { Table, Button, Row, Col, Radio, DatePicker } from 'antd';
+import { Table, Button, Row, Col, Radio, DatePicker, Input } from 'antd';
 
 import "../../../css/circulation/statistics/userManage.css";
+import {message} from "antd/lib/index";
 
 const RadioGroup = Radio.Group;
 const { RangePicker } = DatePicker;
@@ -10,77 +11,82 @@ class borrowOrder extends React.Component{
     constructor(props){
         super(props);
         this.state = {
+            readerBarcode:"",
             data: [
                 {
                     key: "0",
-                    readerBarcode: "0000001",
-                    readerName: "王建国",
-                    operation: "添加",
-                    operationDate: "2018-06-01",
-                    operator: "李有才",
+                    borrowPersonID: "0000001",
+                    bookBarcode: "王建国",
+                    title: "添加",
+                    startDate: "2010-01-01",
+                    endDate: "2018-06-01",
                 },
             ],
             columns: [
                 {
                     title: '读者条码',
-                    dataIndex: 'readerBarcode',
+                    dataIndex: 'borrowPersonID',
                 },
                 {
-                    title: '读者姓名',
-                    dataIndex: 'readerName',
+                    title: '书籍条码',
+                    dataIndex: 'bookBarcode',
                 },
                 {
-                    title: '操作',
-                    dataIndex: 'operation',
+                    title: '书名',
+                    dataIndex: 'title',
                 },
                 {
-                    title: '操作日期',
-                    dataIndex: 'operationDate',
+                    title: '借阅时间',
+                    dataIndex: 'startDate',
                 },
                 {
-                    title: '操作人',
-                    dataIndex: 'operator',
+                    title: '应还时间',
+                    dataIndex: 'endDate',
                 },
             ],
-            optionRadio: "add",
-            startDate: "",
-            endDate: "",
         };
-    }
-
-    handleRadioChange(e){
-        this.setState({
-            optionRadio: e.target.value
-        });
-    }
-
-    handleRangePickerChange(value, dateString){
-        this.setState({
-            startDate: dateString[0],
-            endDate: dateString[1],
-        });
     }
 
     handleButtonClick(){
-        const jsonObj = {
-            type: this.state.optionRadio,
-            startDate: this.state.startDate,
-            endDate: this.state.endDate,
-        };
-        const jsonString = JSON.stringify(jsonObj);
+        let url = "/library/reader/getreadernowrented?readerbarcode="+this.state.readerBarcode;
         let xmlhttp;
         xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function () {
-            if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+        xmlhttp.onreadystatechange = function(){
+            if(xmlhttp.readyState === 4&&xmlhttp.status === 200){
                 let responseObj = JSON.parse(xmlhttp.responseText);
-                if(responseObj.errcode === "000"){
-                }else if(responseObj.errcode === "001"){
+                if(responseObj.code === "000"){
+                    let responseData = responseObj.data;
+                    let data = [];
+                    for(let i=0;i<responseData.length;i++){
+                        let startDate = new Date(responseData[i].borrowTime);
+                        let endDate = new Date(responseData[i].returnTime);
+                        let dataObj = {
+                            key: i,
+                            borrowPersonID: responseData[i].borrowPersonID,
+                            bookBarcode: responseData[i].bookBarcode,
+                            title: responseData[i].title,
+                            startDate: `${startDate.getFullYear()}-${startDate.getMonth()+1}-${startDate.getDate()}`,
+                            endDate: `${endDate.getFullYear()}-${endDate.getMonth()+1}-${endDate.getDate()}`,
+                        };
+                        data.push(dataObj);
+                    }
+                    this.setState({
+                        data: data,
+                    })
+                }else{
+                    if(responseObj.errcode=="002"||responseObj.errcode=="004"){
+                        message.warning("未登录或用户不存在！");
+                    }else if(responseObj.errcode=="003"){
+                        message.warning("您没有这个权限！");
+                    }else if(responseObj.errcode=="500"){
+                        message.error("未知错误！");
+                    }
                 }
             }
         }.bind(this);
-        xmlhttp.open("POST", "/url", false);
-        xmlhttp.setRequestHeader("Content-Type", "application/json");
-        xmlhttp.send(jsonString);
+        xmlhttp.open("GET",url,true);
+        xmlhttp.setRequestHeader("Content-Type","application/json");
+        xmlhttp.send();
     }
 
     render(){
@@ -88,31 +94,18 @@ class borrowOrder extends React.Component{
             <div>
                 <div className="queryDiv">
                     <Row>
-                        <Col span={3}></Col>
-                        <Col span={2}>请输入查询类型：</Col>
-                        <Col span={6}>
-                            <RadioGroup value={this.state.optionRadio} onChange={this.handleRadioChange.bind(this)}>
-                                <Radio value="add">添加</Radio>
-                                <Radio value="cancel">注销</Radio>
-                                <Radio value="cancelcancel">取消注销</Radio>
-                                <Radio value="lost">挂失</Radio>
-                                <Radio value="cancellost">取消挂失</Radio>
-                                <Radio value="modify">修改</Radio>
-                            </RadioGroup>
-                        </Col>
-                        <Col span={1}></Col>
-                        <Col span={2}>请输入查询时段：</Col>
+                        <Col span={8}></Col>
                         <Col span={5}>
-                            <RangePicker
-                                format="YYYY-MM-DD"
-                                placeholder={["开始日期", "结束日期"]}
-                                onChange={this.handleRangePickerChange.bind(this)}
+                            <Input type="text"
+                                   placeholder="请输入读者条码"
                             />
                         </Col>
+                        <Col span={1}></Col>
                         <Col span={2}>
-                            <Button type="primary" onClick={this.handleButtonClick.bind(this)}>查询</Button>
+                            <Button type="primary"
+                            >确定</Button>
                         </Col>
-                        <Col span={3}></Col>
+                        <Col span={8}></Col>
                     </Row>
                 </div>
                 <div className="tableDiv">

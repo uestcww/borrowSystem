@@ -48,7 +48,6 @@ class Login extends React.Component{
         }
     }
     handleLoginClick(e){
-
         hashHistory.push({
             pathname: "/homePage/Search"
         });
@@ -66,26 +65,28 @@ class Login extends React.Component{
         // }
         // const jsonObj = {
         //     username: this.state.username,
-        //     password: this.state.password
-        // }
-        // let jsonString = JSON.stringify(jsonObj)
+        //     password: this.state.password,
+        // };
+        // let jsonString = JSON.stringify(jsonObj);
         // let xmlhttp;
         // xmlhttp = new XMLHttpRequest();
-        // xmlhttp.onreadystatechange = function () {
-        //     if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+        // xmlhttp.onreadystatechange = function(){
+        //     if(xmlhttp.readyState === 4&&xmlhttp.status === 200){
         //         let responseObj = JSON.parse(xmlhttp.responseText);
         //         if(responseObj.errcode === "000"){
         //             message.success("登录成功！");
+        //             localStorage.setItem("username",this.state.username);
+        //             localStorage.setItem("isLogin",true);
         //             hashHistory.push({
-        //                 pathname: "/homePage/Search"
+        //                 pathname: "/homePage/Search",
         //             });
         //         }else if(responseObj.errcode === "001"){
         //             message.error("账号或密码错误！");
         //         }
         //     }
-        // }.bind(this)
-        // xmlhttp.open("POST", "/user/login", false);
-        // xmlhttp.setRequestHeader("Content-Type", "application/json");
+        // }.bind(this);
+        // xmlhttp.open("POST","/user/login",true);
+        // xmlhttp.setRequestHeader("Content-Type","application/json");
         // xmlhttp.send(jsonString);
     }
     render(){

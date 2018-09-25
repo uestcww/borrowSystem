@@ -2,6 +2,7 @@ import React from 'react';
 import { Table, Button, Input, Select, Row, Col } from 'antd';
 
 import "../../../css/circulation/manage/bookManage.css";
+import {message} from "antd/lib/index";
 
 const Option = Select.Option;
 
@@ -9,66 +10,101 @@ class BookManage extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            bookSelect: "title",
+            bookSelect: "1",
+            inputValue: "",
             selectedRowKeys: [],
             loading: false,
             columns: [
                 {
                     title: '书编号',
-                    dataIndex: 'id',
+                    dataIndex: 'bookIndex',
                 },
                 {
                     title: '书名',
-                    dataIndex: 'username',
-                    key: "username",
+                    dataIndex: 'title',
                 },
                 {
                     title: '作者',
-                    dataIndex: 'roleId',
+                    dataIndex: 'author',
                 },
                 {
                     title: 'ISBN',
-                    dataIndex: 'roleId',
+                    dataIndex: 'isbn',
                 },
                 {
                     title: '出版社',
-                    dataIndex: 'roleId',
+                    dataIndex: 'publisher',
                 },
                 {
                     title: '索书号',
-                    dataIndex: 'roleId',
+                    dataIndex: 'callNumber',
                 },
                 {
-                    title: '作者',
-                    dataIndex: 'roleId',
+                    title: '出版日期',
+                    dataIndex: 'publishDate',
                 },
                 {
-                    title: '作者',
-                    dataIndex: 'roleId',
+                    title: '总页数',
+                    dataIndex: 'pages',
                 },
                 {
-                    title: '作者',
-                    dataIndex: 'roleId',
-                },
-                {
-                    title: '作者',
-                    dataIndex: 'roleId',
+                    title: '开本',
+                    dataIndex: 'format',
                 },
                 {
                     title: "操作",
                     dataIndex: "operator",
                     render: (text,record,index) => (
-                        <a onClick={() => this.showUserInfoModifyModal(record)}>修改个人信息</a>
+                        <a>编辑</a>
                     )
                 }
             ],
         };
     }
 
+    handleInputChange(e){
+        this.setState({
+            inputValue: e.target.value,
+        })
+    }
+
     handleSelectChange(value) {
         this.setState({
             bookSelect: value,
         })
+    }
+
+    handleSearchClick(){
+        let jsonObj = {
+            searchType: this.state.bookSelect,
+            searchStr: this.state.bookbarcode,
+        };
+        let jsonString = JSON.stringify(jsonObj);
+        let xmlhttp;
+        xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function () {
+            if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                let responseObj = JSON.parse(xmlhttp.responseText);
+                if(responseObj.code === "00"){
+                    let data = responseObj.data;
+                    let bookData = [];
+                    for(let i =0;i<data.length;i++){
+                        let bookObj = Object.assign({},data[i],{key: i});
+                        bookData.push(bookObj);
+                    }
+                    this.setState({
+                        data: [],
+                    },this.setState({
+                        data: bookData,
+                    }))
+                }else if(responseObj.code === "01"){
+                    message.warning("操作失败，请重试！");
+                }
+            }
+        }.bind(this);
+        xmlhttp.open("POST","/main/searchBooks",true);
+        xmlhttp.setRequestHeader("Content-Type","application/json");
+        xmlhttp.send(jsonString);
     }
 
     onSelectChange(value) {
@@ -92,19 +128,23 @@ class BookManage extends React.Component{
                             <Input
                                 placeholder="请输入要搜索的书籍"
                                 type="text"
+                                value={this.state.inputValue}
+                                onChange={this.handleInputChange.bind(this)}
                             />
                         </Col>
                         <Col span={2}>
                             <Select value={this.state.bookSelect} style={{ width: 150 }} onChange={this.handleSelectChange.bind(this)}>
-                                <Option value="title">标题</Option>
-                                <Option value="author">作者（或责任人）</Option>
-                                <Option value="callNumber">索书号</Option>
-                                <Option value="isbn">ISBN号</Option>
-                                <Option value="barcode">条形码</Option>
+                                <Option value="1">标题</Option>
+                                <Option value="2">作者（或责任人）</Option>
+                                <Option value="3">索书号</Option>
+                                <Option value="4">ISBN号</Option>
+                                <Option value="5">条形码</Option>
                             </Select>
                         </Col>
                         <Col span={3}>
-                            <Button type="primary" >搜索</Button>
+                            <Button type="primary"
+                                    onClick={this.handleSearchClick.bind(this)}
+                            >搜索</Button>
                         </Col>
                         <Col span={6}></Col>
                     </Row>
